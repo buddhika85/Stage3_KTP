@@ -1,4 +1,4 @@
-﻿// IIFE to manage main module of the Stock application
+﻿// IIFE to manage main module of the Stock application - commited to Git Hub - 18 Aug 2015
 
 (function () {
 
