@@ -106,7 +106,16 @@
                         { "mData": "id", "sTitle": "Id"},
                         { "mData": "type", "sTitle": "Type"},
                         { "mData": "status", "sTitle": "Status" },
-                        { "mData": "total", "sTitle": "Total (£)" },
+                        { "mData": "total", "sTitle": "Total (£)", "mRender": function (data, type, row) {
+                                if (data != null) {
+                                    return RoundUpTo(data, 2);
+                                }
+                                else {
+                                    return 0.00;
+                                }
+                            },
+                            "aTargets": [0]
+                        },
                         { "mData": "contactId", "sTitle": "Contact Id", "bVisible": false },
                         { "mData": "creationDateTime", "sTitle": "creationDateTime", "bVisible": false },
                         { "mData": "companyId", "sTitle": "Company Id", "bVisible": false },
