@@ -1011,7 +1011,7 @@
 
     // used to create the orderline data grid
     function DrawOrderlineGrid(orderlines, $http) {
-        DestroyTable();     // clear out search results
+        //DestroyTable();     // clear out search results
         DisplayErrorMessage('', $('#lblErrorOrderLineMessage'));
         $('#orderGrid').empty();
         
