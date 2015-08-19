@@ -11,12 +11,14 @@
     function editSalesOrderCtrl($http, contactResource, blockUI, customerSupplierResource, $location)
     {
         var vm = this;
+        vm.totalValue = "Total : £ 0.00";
         var searchObject = $location.search();                                                      // get order Id, that passed as query string
         var salesOrderId = searchObject.orderId;
 
         vm.title = "Edit Sales Order : Id = " + salesOrderId;
-        $('#orderId').val(salesOrderId);                                                            // set sales order Id
-        prepareInitialUI($http, customerSupplierResource, contactResource, salesOrderId);           // initial UI
+        $('#orderId').val(salesOrderId);     
+        // set sales order Id
+        prepareInitialUI($http, customerSupplierResource, contactResource, salesOrderId, vm);           // initial UI
         
 
         wireCommands(vm, $http, contactResource, customerSupplierResource);
@@ -101,7 +103,7 @@
         // insert an orderline
         vm.addOrderline = function () {
             //alert("add orderline");
-            InsertOrderLine($http);
+            InsertOrderLine($http, vm);
         };
 
         // quantity input change
@@ -540,7 +542,7 @@
     }
 
     // used to create initial UI
-    function prepareInitialUI($http, customerSupplierResource, contactResource, statusResource, salesOrderId)
+    function prepareInitialUI($http, customerSupplierResource, contactResource, salesOrderId, vm)
     {
         RemoveOutlineBorders($('#selectCategory'));
         DisplayErrorMessage('', $('#lblErrorMessage'));
@@ -556,12 +558,12 @@
         // show order details panels buttons
         HideOrderDetailsBtns(false);
 
-        // populate order details, orderlines details
-        PopulateOrderDetails($http);        
+        // populate order details, orderlines details        
+        PopulateOrderDetails($http, vm);        
     }
 
     // populate order details, orderlines details
-    function PopulateOrderDetails($http)
+    function PopulateOrderDetails($http, vm)
     {
         var salesOrderId = $('#orderId').val();                             // sales order Id
        
@@ -572,8 +574,8 @@
             url: ('http://localhost:61945/api/SalesOrder?orderId=' + salesOrderId),
         }).success(function (data) {
             SelectBuyerSellerInfo(data);
-            //EnableDisableConfirmOrderBtn(data);
-            DrawOrderlineGridEditMode($http, data);            
+            //EnableDisableConfirmOrderBtn(data);            
+            DrawOrderlineGridEditMode($http, data, vm);            
         }
         ).error(function (data) {
             // display error message
@@ -582,7 +584,7 @@
     }
 
     // draw orderline grid in initial edit mode
-    function DrawOrderlineGridEditMode($http, order)
+    function DrawOrderlineGridEditMode($http, order, vm)
     {
         // get orderlines by orderId
         var orderlines = null;        
@@ -591,7 +593,7 @@
             headers: { 'Content-Type': 'application/json' },
             url: ('http://localhost:61945/api/Orderline?orderIdVal=' + order.id),
         }).success(function (data) {
-            DrawOrderlineGrid(data, $http);
+            DrawOrderlineGrid(data, $http, vm);
             // disable UI if order is confirmed            
             if (order.status == 'confirmed') {
                 DisableUIAfterConfirm();
@@ -965,7 +967,7 @@
     }
 
     // used to insert an order line
-    function InsertOrderLine($http) {
+    function InsertOrderLine($http, vm) {
         var isValid = ValidateNegotiation();
         if (isValid) {
             // disable negotiation form fields
@@ -989,7 +991,7 @@
                 if (data != null) {                    
                     //alert(data.length);
                     // Refresh orderlines grid
-                    DrawOrderlineGrid(data, $http);
+                    DrawOrderlineGrid(data, $http, vm);
                     // Navigate to the main add/edit order form
                     $('#modelNegotiation').modal('hide');
                 }
@@ -1009,9 +1011,21 @@
         }
     }
 
+    // get total income of the order
+    function GetTotal(orderlines) {
+        var totalIncome = 0.00;
+        $.each(orderlines, function (key, value) {
+            totalIncome += value.totalAmount;
+        });
+        return RoundUpTo(totalIncome, 2);
+    }
+
     // used to create the orderline data grid
-    function DrawOrderlineGrid(orderlines, $http) {
+    function DrawOrderlineGrid(orderlines, $http, vm) {
         //DestroyTable();     // clear out search results
+        // setting total income on the order
+        vm.totalValue = "Total : £ " + GetTotal(orderlines);
+        //alert("Total : £ " + GetTotal(orderlines));
         DisplayErrorMessage('', $('#lblErrorOrderLineMessage'));
         $('#orderGrid').empty();
         
