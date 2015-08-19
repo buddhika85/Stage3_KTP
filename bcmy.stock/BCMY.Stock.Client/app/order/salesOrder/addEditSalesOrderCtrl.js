@@ -12,7 +12,8 @@
     {
         var vm = this;
         vm.title = "Add Sales Order";
-        prepareInitialUI($http, customerSupplierResource, contactResource);        // initial UI
+        vm.totalValue = "Total : £ 0.00";
+        prepareInitialUI($http, customerSupplierResource, contactResource, vm);        // initial UI
 
         wireCommands(vm, $http, contactResource, customerSupplierResource);
     };
@@ -95,7 +96,7 @@
         // insert an orderline
         vm.addOrderline = function () {
             //alert("add orderline");
-            InsertOrderLine($http);
+            InsertOrderLine($http, vm);
         };
 
         // quantity input change
@@ -537,7 +538,7 @@
 
     // used to create initial UI
     function prepareInitialUI($http, customerSupplierResource, contactResource, statusResource)
-    {
+    {        
         RemoveOutlineBorders($('#selectCategory'));
         DisplayErrorMessage('', $('#lblErrorMessage'));
         DisplayErrorMessage('', $('#lblErrorMessageCrtOrdr'));
@@ -898,7 +899,7 @@
     }
 
     // used to insert an order line
-    function InsertOrderLine($http) {
+    function InsertOrderLine($http, vm) {
         var isValid = ValidateNegotiation();
         if (isValid) {
             // disable negotiation form fields
@@ -922,7 +923,7 @@
                 if (data != null) {                    
                     //alert(data.length);
                     // Refresh orderlines grid
-                    DrawOrderlineGrid(data, $http);
+                    DrawOrderlineGrid(data, $http, vm);
                     // Navigate to the main add/edit order form
                     $('#modelNegotiation').modal('hide');
                 }
@@ -942,9 +943,21 @@
         }
     }
 
+    // get total income of the order
+    function GetTotal(orderlines)
+    {
+        var totalIncome = 0.00;
+        $.each(orderlines, function (key, value) {
+            totalIncome += value.totalAmount;
+        });        
+        return RoundUpTo(totalIncome, 2);
+    }
+
     // used to create the orderline data grid
-    function DrawOrderlineGrid(orderlines, $http) {
+    function DrawOrderlineGrid(orderlines, $http, vm) {
         //DestroyTable();     // clear out search results
+        // setting total income on the order
+        vm.totalValue = "Total : £ " + GetTotal(orderlines);
         DisplayErrorMessage('', $('#lblErrorOrderLineMessage'));
         $('#orderGrid').empty();
         
@@ -1013,7 +1026,6 @@
         //    DisplayErrorMessage('Error : No products in the specified search criteria', $('#lblErrorOrderLineMessage'));
         //    alert('Error : No products in the specified search criteria');
         //}
-
     }
 
     // edit orderline

@@ -84,7 +84,7 @@
 
     // float value round up
     function RoundUpTo(floatValue, numOfDecimalPlaces)
-    {
+    {        
         floatValue = parseFloat(floatValue);
         return floatValue.toFixed(numOfDecimalPlaces);
     }
