@@ -1031,8 +1031,28 @@
                         { "mData": "brand", "sTitle": "Brand" },
                         { "mData": "model", "sTitle": "Model" },
                         { "mData": "quantity", "sTitle": "Quantity" },
-                        { "mData": "negotiatedPricePerItem", "sTitle": "PPI (£)" },
-                        { "mData": "totalAmount", "sTitle": "Total (£)" },
+                        {
+                            "mData": "negotiatedPricePerItem", "sTitle": "PPI (£)", "mRender": function (data, type, row) {
+                                if (data != null) {
+                                    return RoundUpTo(data, 2);
+                                }
+                                else {
+                                    return 0.00;
+                                }
+                            },
+                            "aTargets": [0]
+                        },
+                        {
+                            "mData": "totalAmount", "sTitle": "Total (£)", "mRender": function (data, type, row) {
+                                if (data != null) {
+                                    return RoundUpTo(data, 2);
+                                }
+                                else {
+                                    return 0.00;
+                                }
+                            },
+                            "aTargets": [0]
+                        },
                         { "mData": "status", "sTitle": "Status" },
                         { "mData": "orderLineQuantityStatus", "sTitle": "Orderline with stock", "bVisible": false },
                         { "mData": "date", "sTitle": "Date", "bVisible": false },
