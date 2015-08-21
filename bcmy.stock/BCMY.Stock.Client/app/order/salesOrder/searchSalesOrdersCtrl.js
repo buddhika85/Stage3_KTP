@@ -127,7 +127,9 @@
 
                         { "sTitle": "Edit Order", "defaultContent": "<button class='businessEdit'>Edit</button>" },
                 ],
-                "bDestroy": true
+                "bDestroy": true,
+                "aLengthMenu": [[10, 25, 100, -1], [10, 25, 100, "All"]],
+                "iDisplayLength": 10
             });
 
             // data table
