@@ -87,7 +87,38 @@ namespace BCMY.WebAPI.Controllers
             {
                 return null;
             }
-        } 
+        }
+
+
+        /// <summary>
+        /// Filters and exposes all the negotiations by order Id and product list Id, and status = confirmed
+        /// </summary>
+        /// http://localhost:61945/api/Negotiation?orderId=30&productListId=107233&confirmed=true&custSupName=UniOfBrighton&count=10
+        [HttpGet, ActionName("GetSuccessNegotiationsByOrderProductIds")]
+        public IEnumerable<NegotiationViewModel> GetSuccessNegotiationsByProductId(int orderId, int productListId, bool confirmed, string custSupName, int count)
+        {
+            try
+            {
+                // call stored procedure via repository
+                var result = negotiationRepository.SQLQuery<NegotiationViewModel>("SP_GetSuccessNumOfNegotiationsByProductId @orderId, @productListId, @count",
+                    new SqlParameter("orderId", SqlDbType.Int) { Value = orderId },
+                    new SqlParameter("productListId", SqlDbType.Int) { Value = productListId },
+                    new SqlParameter("count", SqlDbType.Int) { Value = count });
+
+                // convert the result to a negotiation View Model list
+                IList<NegotiationViewModel> negotiationVms = result.ToList<NegotiationViewModel>();
+
+                // ordering logic - order by customerSupplier name
+                negotiationVms = SortNegotations(negotiationVms, custSupName);
+
+                //return negotiations
+                return negotiationVms;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Used to save a negotiation record
@@ -126,6 +157,24 @@ namespace BCMY.WebAPI.Controllers
             }
             return message; 
         }
+
+        /// <summary>
+        /// A helper method which sorts all the successful negotiations by same company first then time
+        /// </summary>
+        private IList<NegotiationViewModel> SortNegotations(IList<NegotiationViewModel> negotiationVms, string custSupName)
+        {
+            // first sort same company by time - last first
+            IList<NegotiationViewModel> vmsSorted = negotiationVms.Where(n => n.cusomerSupplierName.ToLower() == custSupName.ToLower()).
+                OrderByDescending(n => n.negotiationDateTime).ToList<NegotiationViewModel>();
+            // then get other company negotations and sort by time - last first
+            IList<NegotiationViewModel> othersSorted = negotiationVms.Where(n => n.cusomerSupplierName.ToLower() != custSupName.ToLower()).
+                OrderByDescending(n => n.negotiationDateTime).ToList<NegotiationViewModel>();
+            foreach (NegotiationViewModel item in othersSorted)
+            {
+                vmsSorted.Add(item);
+            }
+            return vmsSorted;
+        } 
 
     }
 }

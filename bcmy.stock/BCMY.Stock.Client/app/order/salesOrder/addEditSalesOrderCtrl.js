@@ -676,7 +676,7 @@
             RefreshProductNegotiations($http, newOrderId, productListId);
         }
         else {
-            DrawSuccessNegotiationsGrid(null);
+            DrawSuccessNegotiationsGrid(null, null);
             DrawNegotiationsGrid(null);                                 // negotiations of the current product in the order
         }
 
@@ -738,7 +738,7 @@
             RefreshProductNegotiations($http, newOrderId, productListId);
         }
         else {
-            DrawSuccessNegotiationsGrid(null);
+            DrawSuccessNegotiationsGrid(null, null);
             DrawNegotiationsGrid(null);                                 // negotiations of the current product in the order
         }
 
@@ -753,13 +753,14 @@
     // get previouse successful negotions for the same product but different order
     function GetPreiouseSuccessfullNegotiaions($http, newOrderId, productListId)
     {
-        var serverUrl = 'http://localhost:61945/api/Negotiation?orderId=' + newOrderId + '&productListId=' + productListId + '&confirmed=true';
+        var currentCompany = $('#selectCustSupp').find(":selected").text();
+        var serverUrl = 'http://localhost:61945/api/Negotiation?orderId=' + newOrderId + '&productListId=' + productListId + '&confirmed=true' + '&custSupName=' + currentCompany + '&count=3';
         $http({
             method: "get",
             headers: { 'Content-Type': 'application/json' },
             url: serverUrl
         }).success(function (data) {            
-            DrawSuccessNegotiationsGrid(data);                              // previouse successful negotiations in other orders            
+            DrawSuccessNegotiationsGrid(data, currentCompany);                              // previouse successful negotiations in other orders            
         }
         ).error(function (data) {
             // display error message                
@@ -769,15 +770,25 @@
     }
 
     // display successful negotiations table
-    function DrawSuccessNegotiationsGrid(successNegos)
+    function DrawSuccessNegotiationsGrid(successNegos, compnayName)
     {
         var htmlTable = "<table class='table table-condensed table-striped table-bordered'><tr><th>Company</th><th>Contact</th><th>Date</th><th>Time</th><th>Qty</th><th>PPI (£)</th><th>Total (£)</th></tr>";
         if (successNegos != null && successNegos.length > 0) {
 
             $.each(successNegos, function (index, item) {
-                htmlTable += "<tr>" + "<td>" + item.cusomerSupplierName + "</td>" + "<td>" + item.contactName + "</td>" + "<td>" + item.date + "</td>" + "<td>" + item.time + "</td>" +
+
+                // highlight same company success negotations 
+                if (compnayName == item.cusomerSupplierName) {
+
+                    htmlTable += "<tr style='background-color: #ffff99'>" + "<td>" + item.cusomerSupplierName + "</td>" + "<td>" + item.contactName + "</td>" + "<td>" + item.date + "</td>" + "<td>" + item.time + "</td>" +
                     "<td>" + item.quantity + "</td>" + "<td>" + item.negotiatedPricePerItem + "</td>" +
                     "<td>" + item.totalAmount + "</td>" + "</tr>";
+                }
+                else {
+                    htmlTable += "<tr>" + "<td>" + item.cusomerSupplierName + "</td>" + "<td>" + item.contactName + "</td>" + "<td>" + item.date + "</td>" + "<td>" + item.time + "</td>" +
+                    "<td>" + item.quantity + "</td>" + "<td>" + item.negotiatedPricePerItem + "</td>" +
+                    "<td>" + item.totalAmount + "</td>" + "</tr>";
+                }
             });
         }
         else if (successNegos == null || successNegos.length == 0) {
