@@ -5,10 +5,10 @@
     var module = angular.module("stockManagement");
 
     module.controller("EditSalesOrderCtrl",
-        ["$http", "contactResource", "blockUI", "customerSupplierResource", '$location', editSalesOrderCtrl]);
+        ["$http", "contactResource", "blockUI", "customerSupplierResource", '$location', 'currencyResource', editSalesOrderCtrl]);
 
     // controller
-    function editSalesOrderCtrl($http, contactResource, blockUI, customerSupplierResource, $location)
+    function editSalesOrderCtrl($http, contactResource, blockUI, customerSupplierResource, $location, currencyResource)
     {
         var vm = this;
         vm.totalValue = "Total : £ 0.00";
@@ -18,7 +18,7 @@
         vm.title = "Edit Sales Order : Id = " + salesOrderId;
         $('#orderId').val(salesOrderId);     
         // set sales order Id
-        prepareInitialUI($http, customerSupplierResource, contactResource, salesOrderId, vm);           // initial UI
+        prepareInitialUI($http, customerSupplierResource, contactResource, salesOrderId, currencyResource, vm);           // initial UI
         
 
         wireCommands(vm, $http, contactResource, customerSupplierResource);
@@ -542,7 +542,7 @@
     }
 
     // used to create initial UI
-    function prepareInitialUI($http, customerSupplierResource, contactResource, salesOrderId, vm)
+    function prepareInitialUI($http, customerSupplierResource, contactResource, salesOrderId, currencyResource, vm)
     {
         RemoveOutlineBorders($('#selectCategory'));
         DisplayErrorMessage('', $('#lblErrorMessage'));
@@ -551,6 +551,7 @@
 
         populateCategoryDropDown($http);
         populateStatusDropDown($http);
+        populateCurrencyDDL(currencyResource);
        
         // enable product search form sections
         EnableDisableProductSearchForm(false);
@@ -1322,6 +1323,23 @@
         ).error(function (data) {
             // display error message
             alert('error - web service access')
+        });
+    }
+
+    // used to populate currency DDL
+    function populateCurrencyDDL(currencyResource) {
+        currencyResource.query(function (data) {            // REST API call to get all the currencies
+            var listitems = '';
+            $.each(data, function (index, item) {
+                if (item.name == "GBP") {
+                    listitems += '<option value=' + item.id + ' selected=true>' + item.name + '</option>';
+                }
+                else {
+                    listitems += '<option value=' + item.id + '>' + item.name + '</option>';
+                }
+            });
+            $("#selectCurrency option").remove();
+            $("#selectCurrency").append(listitems);
         });
     }
 }());

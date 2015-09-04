@@ -36,3 +36,4 @@
 /// <reference path="jquery-ui-1.11.4.min.js" />
 /// <reference path="../app/order/salesOrder/editSalesOrderCtrl.js" />
 /// <reference path="jquery.maskedinput.min.js" />
+/// <reference path="../common/currencyResource.js" />

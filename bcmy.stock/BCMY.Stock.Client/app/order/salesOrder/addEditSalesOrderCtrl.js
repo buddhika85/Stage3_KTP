@@ -5,15 +5,15 @@
     var module = angular.module("stockManagement");
 
     module.controller("AddEditSalesOrderCtrl",
-        ["$http", "contactResource", "blockUI", "customerSupplierResource", addEditSalesOrderCtrl]);
+        ["$http", "contactResource", "blockUI", "customerSupplierResource", "currencyResource", addEditSalesOrderCtrl]);
 
     // controller
-    function addEditSalesOrderCtrl($http, contactResource, blockUI, customerSupplierResource)
+    function addEditSalesOrderCtrl($http, contactResource, blockUI, customerSupplierResource, currencyResource)
     {
         var vm = this;
         vm.title = "Add Sales Order";
         vm.totalValue = "Total : £ 0.00";
-        prepareInitialUI($http, customerSupplierResource, contactResource, vm);        // initial UI
+        prepareInitialUI($http, customerSupplierResource, contactResource, currencyResource, vm);        // initial UI
 
         wireCommands(vm, $http, contactResource, customerSupplierResource);
     };
@@ -537,7 +537,7 @@
     }
 
     // used to create initial UI
-    function prepareInitialUI($http, customerSupplierResource, contactResource, statusResource)
+    function prepareInitialUI($http, customerSupplierResource, contactResource, currencyResource, vm)
     {        
         RemoveOutlineBorders($('#selectCategory'));
         DisplayErrorMessage('', $('#lblErrorMessage'));
@@ -546,6 +546,7 @@
 
         populateCompanyDropDown(customerSupplierResource);
         populateContactDropDown(contactResource);
+        populateCurrencyDDL(currencyResource);
 
         populateCategoryDropDown($http);
         populateStatusDropDown($http);
@@ -1242,6 +1243,23 @@
             });
             $("#selectCustSupp option").remove();
             $("#selectCustSupp").append(listitems);
+        });
+    }
+
+    // used to populate currency DDL
+    function populateCurrencyDDL(currencyResource) {
+        currencyResource.query(function (data) {            // REST API call to get all the currencies
+            var listitems = '';
+            $.each(data, function (index, item) {
+                if (item.name == "GBP") {
+                    listitems += '<option value=' + item.id + ' selected=true>' + item.name + '</option>';
+                }
+                else {
+                    listitems += '<option value=' + item.id + '>' + item.name + '</option>';
+                }                
+            });
+            $("#selectCurrency option").remove();
+            $("#selectCurrency").append(listitems);
         });
     }
 
