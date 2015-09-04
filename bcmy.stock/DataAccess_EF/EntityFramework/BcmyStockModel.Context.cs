@@ -34,6 +34,8 @@ namespace DataAccess_EF.EntityFramework
         public virtual DbSet<TblOrder> TblOrders { get; set; }
         public virtual DbSet<TblOrderLine> TblOrderLines { get; set; }
         public virtual DbSet<TblProductStock> TblProductStocks { get; set; }
+        public virtual DbSet<TblCurrency> TblCurrencies { get; set; }
+        public virtual DbSet<TblExchangeRate> TblExchangeRates { get; set; }
     
         public virtual ObjectResult<string> SP_ConfirmOrder(Nullable<int> orderId)
         {
@@ -225,6 +227,36 @@ namespace DataAccess_EF.EntityFramework
         public virtual ObjectResult<SP_SearchOrders_Simple_Result> SP_SearchOrders_Simple()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_SearchOrders_Simple_Result>("SP_SearchOrders_Simple");
+        }
+    
+        public virtual ObjectResult<SP_GetSuccessNumOfNegotiationsByProductId_Result> SP_GetSuccessNumOfNegotiationsByProductId(Nullable<int> orderId, Nullable<int> productListId, Nullable<int> count)
+        {
+            var orderIdParameter = orderId.HasValue ?
+                new ObjectParameter("orderId", orderId) :
+                new ObjectParameter("orderId", typeof(int));
+    
+            var productListIdParameter = productListId.HasValue ?
+                new ObjectParameter("productListId", productListId) :
+                new ObjectParameter("productListId", typeof(int));
+    
+            var countParameter = count.HasValue ?
+                new ObjectParameter("count", count) :
+                new ObjectParameter("count", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetSuccessNumOfNegotiationsByProductId_Result>("SP_GetSuccessNumOfNegotiationsByProductId", orderIdParameter, productListIdParameter, countParameter);
+        }
+    
+        public virtual int SP_InserUpdateExchangeRates(Nullable<decimal> usd, Nullable<decimal> euro, ObjectParameter insertEditStatus)
+        {
+            var usdParameter = usd.HasValue ?
+                new ObjectParameter("usd", usd) :
+                new ObjectParameter("usd", typeof(decimal));
+    
+            var euroParameter = euro.HasValue ?
+                new ObjectParameter("euro", euro) :
+                new ObjectParameter("euro", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_InserUpdateExchangeRates", usdParameter, euroParameter, insertEditStatus);
         }
     }
 }

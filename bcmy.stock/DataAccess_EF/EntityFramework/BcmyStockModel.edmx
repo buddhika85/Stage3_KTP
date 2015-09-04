@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="BCMY_StockModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="BCMY_StockModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="TblBusiness">
           <Key>
             <PropertyRef Name="id" />
@@ -39,6 +39,14 @@
           <Property Name="notes" Type="varchar(max)" />
           <Property Name="customerSupplierId" Type="int" />
         </EntityType>
+        <EntityType Name="TblCurrencies">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="country" Type="varchar" MaxLength="500" Nullable="false" />
+        </EntityType>
         <EntityType Name="TblCustomerSupplier">
           <Key>
             <PropertyRef Name="id" />
@@ -63,6 +71,15 @@
           <Property Name="creationDateTime" Type="datetime" Nullable="false" />
           <Property Name="inactiveDateTime" Type="datetime" />
           <Property Name="active" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TblExchangeRate">
+          <Key>
+            <PropertyRef Name="dateER" />
+          </Key>
+          <Property Name="dateER" Type="date" Nullable="false" />
+          <Property Name="timeER" Type="time" Precision="7" Nullable="false" />
+          <Property Name="usdValue" Type="decimal" Precision="10" Scale="4" Nullable="false" />
+          <Property Name="euroValue" Type="decimal" Precision="10" Scale="4" Nullable="false" />
         </EntityType>
         <EntityType Name="TblNegotiation">
           <Key>
@@ -193,6 +210,16 @@
           <Parameter Name="orderId" Type="int" Mode="In" />
           <Parameter Name="productListId" Type="int" Mode="In" />
         </Function>
+        <Function Name="SP_GetSuccessNumOfNegotiationsByProductId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="orderId" Type="int" Mode="In" />
+          <Parameter Name="productListId" Type="int" Mode="In" />
+          <Parameter Name="count" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_InserUpdateExchangeRates" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="usd" Type="decimal" Mode="In" />
+          <Parameter Name="euro" Type="decimal" Mode="In" />
+          <Parameter Name="insertEditStatus" Type="varchar" Mode="InOut" />
+        </Function>
         <Function Name="SP_PopulateTblProductStockForTesting" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="SP_SaveOrderLineWithNegotiation" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="productListId" Type="int" Mode="In" />
@@ -216,7 +243,9 @@
         <EntityContainer Name="BCMY_StockModelStoreContainer">
           <EntitySet Name="TblBusiness" EntityType="Self.TblBusiness" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TblContact" EntityType="Self.TblContact" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TblCurrencies" EntityType="Self.TblCurrencies" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TblCustomerSupplier" EntityType="Self.TblCustomerSupplier" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TblExchangeRate" EntityType="Self.TblExchangeRate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TblNegotiation" EntityType="Self.TblNegotiation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TblOrder" EntityType="Self.TblOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TblOrderLine" EntityType="Self.TblOrderLine" Schema="dbo" store:Type="Tables" />
@@ -238,8 +267,7 @@
             <End Role="TblOrderLine" EntitySet="TblOrderLine" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="BCMY_StockModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -428,7 +456,7 @@
             <End Role="TblOrderLine" EntitySet="TblOrderLines" />
           </AssociationSet>
           <FunctionImport Name="SP_ConfirmOrder" ReturnType="Collection(String)">
-            <Parameter Name="orderId" Mode="In" Type="Int32" />
+          <Parameter Name="orderId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SP_CreateOrder" ReturnType="Collection(Int32)">
             <Parameter Name="companyId" Mode="In" Type="Int32" />
@@ -437,27 +465,27 @@
           </FunctionImport>
           <FunctionImport Name="SP_GetAllOrderViewModels" ReturnType="Collection(BCMY_StockModel.SP_GetAllOrderViewModels_Result)" />
           <FunctionImport Name="SP_GetContactInfo">
-            <Parameter Name="contactId" Mode="In" Type="Int32" />
+          <Parameter Name="contactId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SP_GetContactsByCustomerSupplierId" ReturnType="Collection(BCMY_StockModel.SP_GetContactsByCustomerSupplierId_Result)">
-            <Parameter Name="customerSupplierId" Mode="In" Type="Int32" />
+          <Parameter Name="customerSupplierId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SP_GetContactsWithCompanyNames" ReturnType="Collection(BCMY_StockModel.SP_GetContactsWithCompanyNames_Result)" />
           <FunctionImport Name="SP_GetCustomerSuppliersByFullName" ReturnType="Collection(BCMY_StockModel.SP_GetCustomerSuppliersByFullName_Result)">
-            <Parameter Name="fullName" Mode="In" Type="String" />
+          <Parameter Name="fullName" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="SP_GetNegotiationsByOrderProductIds" ReturnType="Collection(BCMY_StockModel.SP_GetNegotiationsByOrderProductIds_Result)">
             <Parameter Name="orderId" Mode="In" Type="Int32" />
             <Parameter Name="productListId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SP_GetOrderlineInfoById" ReturnType="Collection(BCMY_StockModel.SP_GetOrderlineInfoById_Result)">
-            <Parameter Name="orderlineId" Mode="In" Type="Int32" />
+          <Parameter Name="orderlineId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SP_GetOrderLinesByOrderId" ReturnType="Collection(BCMY_StockModel.SP_GetOrderLinesByOrderId_Result)">
-            <Parameter Name="orderIdVal" Mode="In" Type="Int32" />
+          <Parameter Name="orderIdVal" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SP_GetOrderVmById" ReturnType="Collection(BCMY_StockModel.SP_GetOrderVmById_Result)">
-            <Parameter Name="orderId" Mode="In" Type="Int32" />
+          <Parameter Name="orderId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SP_GetSuccessNegotiationsByProductId" ReturnType="Collection(BCMY_StockModel.SP_GetSuccessNegotiationsByProductId_Result)">
             <Parameter Name="orderId" Mode="In" Type="Int32" />
@@ -483,6 +511,18 @@
             <Parameter Name="creationDateTo" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="SP_SearchOrders_Simple" ReturnType="Collection(BCMY_StockModel.SP_SearchOrders_Simple_Result)" />
+          <EntitySet Name="TblCurrencies" EntityType="BCMY_StockModel.TblCurrency" />
+          <EntitySet Name="TblExchangeRates" EntityType="BCMY_StockModel.TblExchangeRate" />
+          <FunctionImport Name="SP_GetSuccessNumOfNegotiationsByProductId" ReturnType="Collection(BCMY_StockModel.SP_GetSuccessNumOfNegotiationsByProductId_Result)">
+            <Parameter Name="orderId" Mode="In" Type="Int32" />
+            <Parameter Name="productListId" Mode="In" Type="Int32" />
+            <Parameter Name="count" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_InserUpdateExchangeRates">
+            <Parameter Name="usd" Mode="In" Type="Decimal" />
+            <Parameter Name="euro" Mode="In" Type="Decimal" />
+            <Parameter Name="insertEditStatus" Mode="InOut" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="SP_GetAllOrderViewModels_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
@@ -654,6 +694,39 @@
           <Property Type="String" Name="contactFulName" Nullable="false" MaxLength="101" />
           <Property Type="String" Name="orderCreationDate" Nullable="true" MaxLength="30" />
           <Property Type="String" Name="orderCreationTime" Nullable="true" MaxLength="8" />
+        </ComplexType>
+        <EntityType Name="TblCurrency">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="country" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="TblExchangeRate">
+          <Key>
+            <PropertyRef Name="dateER" />
+          </Key>
+          <Property Name="dateER" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="timeER" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="usdValue" Type="Decimal" Nullable="false" Precision="10" Scale="4" />
+          <Property Name="euroValue" Type="Decimal" Nullable="false" Precision="10" Scale="4" />
+        </EntityType>
+        <ComplexType Name="SP_GetSuccessNumOfNegotiationsByProductId_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="Int32" Name="productId" Nullable="false" />
+          <Property Type="Decimal" Name="quantity" Nullable="true" Precision="10" Scale="5" />
+          <Property Type="Decimal" Name="negotiatedPricePerItem" Nullable="true" Precision="10" Scale="5" />
+          <Property Type="Decimal" Name="totalAmount" Nullable="true" Precision="10" Scale="5" />
+          <Property Type="String" Name="status" Nullable="false" MaxLength="20" />
+          <Property Type="DateTime" Name="negotiationDateTime" Nullable="false" Precision="23" />
+          <Property Type="Int32" Name="orderId" Nullable="true" />
+          <Property Type="String" Name="date" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="time" Nullable="true" MaxLength="8" />
+          <Property Type="Int32" Name="customerSupplierId" Nullable="false" />
+          <Property Type="String" Name="cusomerSupplierName" Nullable="false" MaxLength="30" />
+          <Property Type="Int32" Name="contactId" Nullable="false" />
+          <Property Type="String" Name="contactName" Nullable="false" MaxLength="101" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -995,6 +1068,46 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="TblCurrencies">
+            <EntityTypeMapping TypeName="BCMY_StockModel.TblCurrency">
+              <MappingFragment StoreEntitySet="TblCurrencies">
+                <ScalarProperty Name="country" ColumnName="country" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TblExchangeRates">
+            <EntityTypeMapping TypeName="BCMY_StockModel.TblExchangeRate">
+              <MappingFragment StoreEntitySet="TblExchangeRate">
+                <ScalarProperty Name="euroValue" ColumnName="euroValue" />
+                <ScalarProperty Name="usdValue" ColumnName="usdValue" />
+                <ScalarProperty Name="timeER" ColumnName="timeER" />
+                <ScalarProperty Name="dateER" ColumnName="dateER" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="SP_GetSuccessNumOfNegotiationsByProductId" FunctionName="BCMY_StockModel.Store.SP_GetSuccessNumOfNegotiationsByProductId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BCMY_StockModel.SP_GetSuccessNumOfNegotiationsByProductId_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="productId" ColumnName="productId" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="negotiatedPricePerItem" ColumnName="negotiatedPricePerItem" />
+                <ScalarProperty Name="totalAmount" ColumnName="totalAmount" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="negotiationDateTime" ColumnName="negotiationDateTime" />
+                <ScalarProperty Name="orderId" ColumnName="orderId" />
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="time" ColumnName="time" />
+                <ScalarProperty Name="customerSupplierId" ColumnName="customerSupplierId" />
+                <ScalarProperty Name="cusomerSupplierName" ColumnName="cusomerSupplierName" />
+                <ScalarProperty Name="contactId" ColumnName="contactId" />
+                <ScalarProperty Name="contactName" ColumnName="contactName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_InserUpdateExchangeRates" FunctionName="BCMY_StockModel.Store.SP_InserUpdateExchangeRates" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

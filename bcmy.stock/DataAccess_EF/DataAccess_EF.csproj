@@ -122,6 +122,9 @@
     <Compile Include="EntityFramework\SP_GetSuccessNegotiationsByProductId_Result.cs">
       <DependentUpon>BcmyStockModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="EntityFramework\SP_GetSuccessNumOfNegotiationsByProductId_Result.cs">
+      <DependentUpon>BcmyStockModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="EntityFramework\SP_SaveOrderLineWithNegotiation_Result.cs">
       <DependentUpon>BcmyStockModel.tt</DependentUpon>
     </Compile>
@@ -137,7 +140,13 @@
     <Compile Include="EntityFramework\TblContact.cs">
       <DependentUpon>BcmyStockModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="EntityFramework\TblCurrency.cs">
+      <DependentUpon>BcmyStockModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="EntityFramework\TblCustomerSupplier.cs">
+      <DependentUpon>BcmyStockModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EntityFramework\TblExchangeRate.cs">
       <DependentUpon>BcmyStockModel.tt</DependentUpon>
     </Compile>
     <Compile Include="EntityFramework\TblNegotiation.cs">
