@@ -205,7 +205,7 @@ namespace BCMY.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Returns a conact obj by using passed params
+        /// Returns a contact obj by using passed params
         /// </summary>
         private TblContact GetContact(int id, string title, string firstName, string lastName, string position, string directDial, string email, string status, string notes, int customerSupplierId, int? extension)
         {
