@@ -26,6 +26,10 @@ namespace GenericRepository_UnitOfWork.UOW
         private GenericRepository<TblOrder> orderRepository;
         private GenericRepository<TblOrderLine> orderLineRepository;
         private GenericRepository<TblNegotiation> negotiationRepository;
+        private GenericRepository<TblProductStock> productStockRepository;        
+        private GenericRepository<TblExchangeRate> exchangeRateRepository;        
+        private GenericRepository<TblCurrency> currencyRepository;
+        
                 
         // add more repositories below
         // ...
@@ -97,6 +101,39 @@ namespace GenericRepository_UnitOfWork.UOW
                 }
                 return negotiationRepository;
             }
+        }
+        public GenericRepository<TblProductStock> ProductStockRepository
+        {
+            get 
+            {
+                if (productStockRepository == null)
+                {
+                    productStockRepository = new GenericRepository<TblProductStock>(_context);
+                }
+                return productStockRepository; 
+            }
+        }
+        public GenericRepository<TblExchangeRate> ExchangeRateRepository
+        {
+            get 
+            {
+                if (exchangeRateRepository == null)
+                {
+                    exchangeRateRepository = new GenericRepository<TblExchangeRate>(_context);
+                }
+                return exchangeRateRepository; 
+            }
+        }
+        public GenericRepository<TblCurrency> CurrencyRepository
+        {
+            get 
+            {
+                if (currencyRepository == null)
+                {
+                    currencyRepository = new GenericRepository<TblCurrency>(_context);
+                }
+                return currencyRepository; 
+            }            
         }
         // add more repositories below
         // ...
