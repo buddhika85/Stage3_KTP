@@ -132,6 +132,25 @@
         vm.ReloadPage = function () {
             ReloadCurrentPage();            // from Util JS file
         };
+
+        // perform default VAT selections on currency selections
+        $('#selectCurrency').click(function () {
+            PerformDefaultVatSelections();
+        });
+    }
+
+    // used to perform default VAT selections
+    // if GBP --> yes or Else --> no
+    function PerformDefaultVatSelections() {
+        var currIndex = $('#selectCurrency').val();
+        var currText = $('#selectCurrency option:selected').text();
+        //debugger
+        if (currIndex === "1" && currText === 'GBP') {
+            $('#selectVAT').val(1);
+        }
+        else {
+            $('#selectVAT').val(2);
+        }
     }
 
     // used to confirm an order
