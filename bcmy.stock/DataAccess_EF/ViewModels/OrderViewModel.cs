@@ -16,12 +16,15 @@ namespace DataAccess_EF.ViewModels
         public Nullable<decimal> total { get; set; }
         public Nullable<int> contactId { get; set; }
         public System.DateTime creationDateTime { get; set; }
+        public string vat { get; set; }
+        public int currencyId { get; set; }
+        public string currency { get; set; }
 
         // view model - extra attributes
         public int? companyId { get; set; }                 // customerSupplier
         public string company { get; set; }
         public string contactFulName { get; set; }          // contact
         public string orderCreationDate { get; set; }
-        public string orderCreationTime { get; set; }
+        public string orderCreationTime { get; set; }        
     }
 }

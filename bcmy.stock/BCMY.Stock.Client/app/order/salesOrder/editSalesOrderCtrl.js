@@ -286,6 +286,8 @@
     function EnableDisableBuyerSellerFeilds(isDisabled) {
         $('#selectCustSupp').attr("disabled", isDisabled);
         $('#selectContact').attr("disabled", isDisabled);
+        $('#selectCurrency').attr("disabled", isDisabled);
+        $('#selectVAT').attr("disabled", isDisabled);
         $('#addContactBtn').attr("disabled", isDisabled);
         $('#createOrdrBtn').attr("disabled", isDisabled);
     }
@@ -642,6 +644,7 @@
     {        
         populateCompanyDropDown(orderVm);        
         populateContactDropDown(orderVm);
+        populateVatandCurrency(orderVm);
         EnableDisableBuyerSellerFeilds(true);
     }
 
@@ -1314,6 +1317,12 @@
         var listitems = '<option value=' + orderVm.contactId + 'selected="selected">' + orderVm.contactFulName + '</option>';
         $("#selectContact option").remove();
         $("#selectContact").append(listitems);        
+    }
+
+    // used to select orders VAT and currency selections
+    function populateVatandCurrency(orderVm) {
+        $('#selectCurrency').val(orderVm.currency);
+        $('#selectVAT').val(orderVm.vat);
     }
 
     // used to select company ddl for the popups
