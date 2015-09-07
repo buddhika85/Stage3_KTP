@@ -14,8 +14,15 @@ namespace DataAccess_EF.EntityFramework
     
     public partial class TblCurrency
     {
+        public TblCurrency()
+        {
+            this.TblOrders = new HashSet<TblOrder>();
+        }
+    
         public int id { get; set; }
         public string name { get; set; }
         public string country { get; set; }
+    
+        public virtual ICollection<TblOrder> TblOrders { get; set; }
     }
 }

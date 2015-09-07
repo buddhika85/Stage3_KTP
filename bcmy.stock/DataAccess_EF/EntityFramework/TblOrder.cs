@@ -26,8 +26,11 @@ namespace DataAccess_EF.EntityFramework
         public Nullable<decimal> total { get; set; }
         public Nullable<int> contactId { get; set; }
         public System.DateTime creationDateTime { get; set; }
+        public Nullable<bool> vat { get; set; }
+        public Nullable<int> currencyId { get; set; }
     
         public virtual TblContact TblContact { get; set; }
+        public virtual TblCurrency TblCurrency { get; set; }
         public virtual ICollection<TblNegotiation> TblNegotiations { get; set; }
         public virtual ICollection<TblOrderLine> TblOrderLines { get; set; }
     }

@@ -31,11 +31,11 @@ namespace DataAccess_EF.EntityFramework
         public virtual DbSet<TblContact> TblContacts { get; set; }
         public virtual DbSet<TblCustomerSupplier> TblCustomerSuppliers { get; set; }
         public virtual DbSet<TblNegotiation> TblNegotiations { get; set; }
-        public virtual DbSet<TblOrder> TblOrders { get; set; }
         public virtual DbSet<TblOrderLine> TblOrderLines { get; set; }
         public virtual DbSet<TblProductStock> TblProductStocks { get; set; }
         public virtual DbSet<TblCurrency> TblCurrencies { get; set; }
         public virtual DbSet<TblExchangeRate> TblExchangeRates { get; set; }
+        public virtual DbSet<TblOrder> TblOrders { get; set; }
     
         public virtual ObjectResult<string> SP_ConfirmOrder(Nullable<int> orderId)
         {

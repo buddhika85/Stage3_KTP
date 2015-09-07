@@ -104,6 +104,8 @@
           <Property Name="total" Type="decimal" Precision="20" Scale="5" />
           <Property Name="contactId" Type="int" />
           <Property Name="creationDateTime" Type="datetime" Nullable="false" />
+          <Property Name="vat" Type="bit" />
+          <Property Name="currencyId" Type="int" />
         </EntityType>
         <EntityType Name="TblOrderLine">
           <Key>
@@ -159,6 +161,18 @@
             </Principal>
             <Dependent Role="TblOrder">
               <PropertyRef Name="contactId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TblOrder__curren__12FDD1B2">
+          <End Role="TblCurrencies" Type="Self.TblCurrencies" Multiplicity="0..1" />
+          <End Role="TblOrder" Type="Self.TblOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TblCurrencies">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="TblOrder">
+              <PropertyRef Name="currencyId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -262,6 +276,10 @@
             <End Role="TblContact" EntitySet="TblContact" />
             <End Role="TblOrder" EntitySet="TblOrder" />
           </AssociationSet>
+          <AssociationSet Name="FK__TblOrder__curren__12FDD1B2" Association="Self.FK__TblOrder__curren__12FDD1B2">
+            <End Role="TblCurrencies" EntitySet="TblCurrencies" />
+            <End Role="TblOrder" EntitySet="TblOrder" />
+          </AssociationSet>
           <AssociationSet Name="FK__TblOrderL__order__7A3223E8" Association="Self.FK__TblOrderL__order__7A3223E8">
             <End Role="TblOrder" EntitySet="TblOrder" />
             <End Role="TblOrderLine" EntitySet="TblOrderLine" />
@@ -305,7 +323,7 @@
           <Property Name="notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="customerSupplierId" Type="Int32" />
           <NavigationProperty Name="TblCustomerSupplier" Relationship="Self.FK__TblContac__custo__719CDDE7" FromRole="TblContact" ToRole="TblCustomerSupplier" />
-          <NavigationProperty Name="TblOrders" Relationship="Self.FK__TblOrder__contac__76619304" FromRole="TblContact" ToRole="TblOrder" />
+          <NavigationProperty Name="TblOrders" Relationship="BCMY_StockModel.FK__TblOrder__contac__76619304" FromRole="TblContact" ToRole="TblOrder" />
         </EntityType>
         <EntityType Name="TblCustomerSupplier">
           <Key>
@@ -345,21 +363,7 @@
           <Property Name="status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="negotiationDateTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="orderId" Type="Int32" />
-          <NavigationProperty Name="TblOrder" Relationship="Self.FK__TblNegoti__order__7E02B4CC" FromRole="TblNegotiation" ToRole="TblOrder" />
-        </EntityType>
-        <EntityType Name="TblOrder">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="type" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="total" Type="Decimal" Precision="20" Scale="5" />
-          <Property Name="contactId" Type="Int32" />
-          <Property Name="creationDateTime" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="TblContact" Relationship="Self.FK__TblOrder__contac__76619304" FromRole="TblOrder" ToRole="TblContact" />
-          <NavigationProperty Name="TblNegotiations" Relationship="Self.FK__TblNegoti__order__7E02B4CC" FromRole="TblOrder" ToRole="TblNegotiation" />
-          <NavigationProperty Name="TblOrderLines" Relationship="Self.FK__TblOrderL__order__7A3223E8" FromRole="TblOrder" ToRole="TblOrderLine" />
+          <NavigationProperty Name="TblOrder" Relationship="BCMY_StockModel.FK__TblNegoti__order__7E02B4CC" FromRole="TblNegotiation" ToRole="TblOrder" />
         </EntityType>
         <EntityType Name="TblOrderLine">
           <Key>
@@ -374,7 +378,7 @@
           <Property Name="orderLineQuantityStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="orderlineDateTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="orderId" Type="Int32" />
-          <NavigationProperty Name="TblOrder" Relationship="Self.FK__TblOrderL__order__7A3223E8" FromRole="TblOrderLine" ToRole="TblOrder" />
+          <NavigationProperty Name="TblOrder" Relationship="BCMY_StockModel.FK__TblOrderL__order__7A3223E8" FromRole="TblOrderLine" ToRole="TblOrder" />
         </EntityType>
         <EntityType Name="TblProductStock">
           <Key>
@@ -395,65 +399,16 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TblOrder__contac__76619304">
-          <End Role="TblContact" Type="Self.TblContact" Multiplicity="0..1" />
-          <End Role="TblOrder" Type="Self.TblOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TblContact">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="TblOrder">
-              <PropertyRef Name="contactId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__TblNegoti__order__7E02B4CC">
-          <End Role="TblOrder" Type="Self.TblOrder" Multiplicity="0..1" />
-          <End Role="TblNegotiation" Type="Self.TblNegotiation" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TblOrder">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="TblNegotiation">
-              <PropertyRef Name="orderId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__TblOrderL__order__7A3223E8">
-          <End Role="TblOrder" Type="Self.TblOrder" Multiplicity="0..1" />
-          <End Role="TblOrderLine" Type="Self.TblOrderLine" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TblOrder">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="TblOrderLine">
-              <PropertyRef Name="orderId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="BCMY_StockEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="TblBusinesses" EntityType="Self.TblBusiness" />
           <EntitySet Name="TblContacts" EntityType="Self.TblContact" />
           <EntitySet Name="TblCustomerSuppliers" EntityType="Self.TblCustomerSupplier" />
           <EntitySet Name="TblNegotiations" EntityType="Self.TblNegotiation" />
-          <EntitySet Name="TblOrders" EntityType="Self.TblOrder" />
           <EntitySet Name="TblOrderLines" EntityType="Self.TblOrderLine" />
           <EntitySet Name="TblProductStocks" EntityType="Self.TblProductStock" />
           <AssociationSet Name="FK__TblContac__custo__719CDDE7" Association="Self.FK__TblContac__custo__719CDDE7">
             <End Role="TblCustomerSupplier" EntitySet="TblCustomerSuppliers" />
             <End Role="TblContact" EntitySet="TblContacts" />
-          </AssociationSet>
-          <AssociationSet Name="FK__TblOrder__contac__76619304" Association="Self.FK__TblOrder__contac__76619304">
-            <End Role="TblContact" EntitySet="TblContacts" />
-            <End Role="TblOrder" EntitySet="TblOrders" />
-          </AssociationSet>
-          <AssociationSet Name="FK__TblNegoti__order__7E02B4CC" Association="Self.FK__TblNegoti__order__7E02B4CC">
-            <End Role="TblOrder" EntitySet="TblOrders" />
-            <End Role="TblNegotiation" EntitySet="TblNegotiations" />
-          </AssociationSet>
-          <AssociationSet Name="FK__TblOrderL__order__7A3223E8" Association="Self.FK__TblOrderL__order__7A3223E8">
-            <End Role="TblOrder" EntitySet="TblOrders" />
-            <End Role="TblOrderLine" EntitySet="TblOrderLines" />
           </AssociationSet>
           <FunctionImport Name="SP_ConfirmOrder" ReturnType="Collection(String)">
           <Parameter Name="orderId" Mode="In" Type="Int32" />
@@ -523,6 +478,23 @@
             <Parameter Name="euro" Mode="In" Type="Decimal" />
             <Parameter Name="insertEditStatus" Mode="InOut" Type="String" />
           </FunctionImport>
+          <EntitySet Name="TblOrders" EntityType="BCMY_StockModel.TblOrder" />
+          <AssociationSet Name="FK__TblOrder__contac__76619304" Association="BCMY_StockModel.FK__TblOrder__contac__76619304">
+            <End Role="TblContact" EntitySet="TblContacts" />
+            <End Role="TblOrder" EntitySet="TblOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TblOrder__curren__12FDD1B2" Association="BCMY_StockModel.FK__TblOrder__curren__12FDD1B2">
+            <End Role="TblCurrency" EntitySet="TblCurrencies" />
+            <End Role="TblOrder" EntitySet="TblOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TblNegoti__order__7E02B4CC" Association="BCMY_StockModel.FK__TblNegoti__order__7E02B4CC">
+            <End Role="TblOrder" EntitySet="TblOrders" />
+            <End Role="TblNegotiation" EntitySet="TblNegotiations" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TblOrderL__order__7A3223E8" Association="BCMY_StockModel.FK__TblOrderL__order__7A3223E8">
+            <End Role="TblOrder" EntitySet="TblOrders" />
+            <End Role="TblOrderLine" EntitySet="TblOrderLines" />
+          </AssociationSet>
         </EntityContainer>
         <ComplexType Name="SP_GetAllOrderViewModels_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
@@ -702,6 +674,7 @@
           <Property Name="id" Type="Int32" Nullable="false" />
           <Property Name="name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="country" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="TblOrders" Relationship="BCMY_StockModel.FK__TblOrder__curren__12FDD1B2" FromRole="TblCurrency" ToRole="TblOrder" />
         </EntityType>
         <EntityType Name="TblExchangeRate">
           <Key>
@@ -728,6 +701,71 @@
           <Property Type="Int32" Name="contactId" Nullable="false" />
           <Property Type="String" Name="contactName" Nullable="false" MaxLength="101" />
         </ComplexType>
+        <EntityType Name="TblOrder">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="type" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="total" Type="Decimal" Precision="20" Scale="5" />
+          <Property Name="contactId" Type="Int32" />
+          <Property Name="creationDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="vat" Type="Boolean" />
+          <Property Name="currencyId" Type="Int32" />
+          <NavigationProperty Name="TblContact" Relationship="BCMY_StockModel.FK__TblOrder__contac__76619304" FromRole="TblOrder" ToRole="TblContact" />
+          <NavigationProperty Name="TblCurrency" Relationship="BCMY_StockModel.FK__TblOrder__curren__12FDD1B2" FromRole="TblOrder" ToRole="TblCurrency" />
+          <NavigationProperty Name="TblNegotiations" Relationship="BCMY_StockModel.FK__TblNegoti__order__7E02B4CC" FromRole="TblOrder" ToRole="TblNegotiation" />
+          <NavigationProperty Name="TblOrderLines" Relationship="BCMY_StockModel.FK__TblOrderL__order__7A3223E8" FromRole="TblOrder" ToRole="TblOrderLine" />
+        </EntityType>
+        <Association Name="FK__TblOrder__contac__76619304">
+          <End Type="BCMY_StockModel.TblContact" Role="TblContact" Multiplicity="0..1" />
+          <End Type="BCMY_StockModel.TblOrder" Role="TblOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TblContact">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="TblOrder">
+              <PropertyRef Name="contactId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TblOrder__curren__12FDD1B2">
+          <End Type="BCMY_StockModel.TblCurrency" Role="TblCurrency" Multiplicity="0..1" />
+          <End Type="BCMY_StockModel.TblOrder" Role="TblOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TblCurrency">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="TblOrder">
+              <PropertyRef Name="currencyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TblNegoti__order__7E02B4CC">
+          <End Type="BCMY_StockModel.TblOrder" Role="TblOrder" Multiplicity="0..1" />
+          <End Type="BCMY_StockModel.TblNegotiation" Role="TblNegotiation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TblOrder">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="TblNegotiation">
+              <PropertyRef Name="orderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TblOrderL__order__7A3223E8">
+          <End Type="BCMY_StockModel.TblOrder" Role="TblOrder" Multiplicity="0..1" />
+          <End Type="BCMY_StockModel.TblOrderLine" Role="TblOrderLine" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TblOrder">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="TblOrderLine">
+              <PropertyRef Name="orderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -807,18 +845,6 @@
                 <ScalarProperty Name="status" ColumnName="status" />
                 <ScalarProperty Name="negotiationDateTime" ColumnName="negotiationDateTime" />
                 <ScalarProperty Name="orderId" ColumnName="orderId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TblOrders">
-            <EntityTypeMapping TypeName="BCMY_StockModel.TblOrder">
-              <MappingFragment StoreEntitySet="TblOrder">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="type" ColumnName="type" />
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="total" ColumnName="total" />
-                <ScalarProperty Name="contactId" ColumnName="contactId" />
-                <ScalarProperty Name="creationDateTime" ColumnName="creationDateTime" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1108,6 +1134,20 @@
             </ResultMapping>
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="SP_InserUpdateExchangeRates" FunctionName="BCMY_StockModel.Store.SP_InserUpdateExchangeRates" />
+          <EntitySetMapping Name="TblOrders">
+            <EntityTypeMapping TypeName="BCMY_StockModel.TblOrder">
+              <MappingFragment StoreEntitySet="TblOrder">
+                <ScalarProperty Name="currencyId" ColumnName="currencyId" />
+                <ScalarProperty Name="vat" ColumnName="vat" />
+                <ScalarProperty Name="creationDateTime" ColumnName="creationDateTime" />
+                <ScalarProperty Name="contactId" ColumnName="contactId" />
+                <ScalarProperty Name="total" ColumnName="total" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
