@@ -146,10 +146,10 @@
         var currText = $('#selectCurrency option:selected').text();
         //debugger
         if (currIndex === "1" && currText === 'GBP') {
-            $('#selectVAT').val(1);
+            $('#selectVAT').val('YES');
         }
         else {
-            $('#selectVAT').val(2);
+            $('#selectVAT').val('NO');
         }
     }
 

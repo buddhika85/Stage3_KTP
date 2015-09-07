@@ -56,16 +56,18 @@ namespace BCMY.WebAPI.Controllers
         }
 
 
-        // http://localhost:61945/api/SalesOrder?companyid=1&contactfulname=kumar_sangakkara
+        // http://localhost:61945/api/SalesOrder?companyid=1&contactfulname=kumar_sangakkara&vat=YES&currency=1
         [HttpGet, ActionName("CreateOrder")]
-        public int CreateOrder(int companyId, string contactFulName)
+        public int CreateOrder(int companyId, string contactFulName, string vat, int currency)
         {
             try
             {
                 // call stored procedure via repository
-                var result = orderRepository.SQLQuery<int>("SP_CreateOrder @companyId, @contactFulName, @type",
+                var result = orderRepository.SQLQuery<int>("SP_CreateOrder @companyId, @contactFulName, @vat, @currencyId, @type",
                     new SqlParameter("companyId", SqlDbType.Int) { Value = companyId },
                     new SqlParameter("contactFulName", SqlDbType.Text) { Value = contactFulName },
+                    new SqlParameter("vat", SqlDbType.VarChar) { Value = vat},
+                    new SqlParameter("currencyId", SqlDbType.Int) { Value = currency },
                     new SqlParameter("type", SqlDbType.Text) { Value = "sales" });
 
                 // convert the result to a view model object list

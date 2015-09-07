@@ -139,10 +139,10 @@
         var currText = $('#selectCurrency option:selected').text();
         //debugger
         if (currIndex === "1" && currText === 'GBP') {
-            $('#selectVAT').val(1);
+            $('#selectVAT').val('YES');
         }
         else {
-            $('#selectVAT').val(2);
+            $('#selectVAT').val('NO');
         }
     }
 
@@ -247,10 +247,13 @@
         // create the order
         var companyId = $('#selectCustSupp').val();
         var contactFulName = $("#selectContact").val();
+        var vat = $('#selectVAT').val();
+        var currency = $('#selectCurrency').val();
         $http({
             method: "get",
             headers: { 'Content-Type': 'application/json' },
-            url: ('http://localhost:61945/api/SalesOrder?companyId=' + companyId + '&contactFulName=' + contactFulName)
+            url: ('http://localhost:61945/api/SalesOrder?companyId=' + companyId + '&contactFulName=' + contactFulName + 
+                '&vat=' + vat + '&currency=' + currency)
         })
         .success(function (data) {
             if (data != -999) {                
@@ -279,6 +282,9 @@
     function EnableDisableBuyerSellerFeilds(isDisabled) {
         $('#selectCustSupp').attr("disabled", isDisabled);
         $('#selectContact').attr("disabled", isDisabled);
+        $('#selectVAT').attr("disabled", isDisabled);
+        $('#selectCurrency').attr("disabled", isDisabled);
+
         $('#addContactBtn').attr("disabled", isDisabled);
         $('#createOrdrBtn').attr("disabled", isDisabled);
     }

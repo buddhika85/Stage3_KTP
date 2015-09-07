@@ -104,8 +104,8 @@
           <Property Name="total" Type="decimal" Precision="20" Scale="5" />
           <Property Name="contactId" Type="int" />
           <Property Name="creationDateTime" Type="datetime" Nullable="false" />
-          <Property Name="vat" Type="bit" />
           <Property Name="currencyId" Type="int" />
+          <Property Name="vat" Type="varchar" MaxLength="3" />
         </EntityType>
         <EntityType Name="TblOrderLine">
           <Key>
@@ -194,6 +194,8 @@
         <Function Name="SP_CreateOrder" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="companyId" Type="int" Mode="In" />
           <Parameter Name="contactFulName" Type="varchar(max)" Mode="In" />
+          <Parameter Name="vat" Type="varchar" Mode="In" />
+          <Parameter Name="currencyId" Type="int" Mode="In" />
           <Parameter Name="type" Type="varchar" Mode="In" />
         </Function>
         <Function Name="SP_GetAllOrderViewModels" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
@@ -416,6 +418,8 @@
           <FunctionImport Name="SP_CreateOrder" ReturnType="Collection(Int32)">
             <Parameter Name="companyId" Mode="In" Type="Int32" />
             <Parameter Name="contactFulName" Mode="In" Type="String" />
+            <Parameter Name="vat" Mode="In" Type="String" />
+            <Parameter Name="currencyId" Mode="In" Type="Int32" />
             <Parameter Name="type" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="SP_GetAllOrderViewModels" ReturnType="Collection(BCMY_StockModel.SP_GetAllOrderViewModels_Result)" />
@@ -495,7 +499,7 @@
             <End Role="TblOrder" EntitySet="TblOrders" />
             <End Role="TblOrderLine" EntitySet="TblOrderLines" />
           </AssociationSet>
-        </EntityContainer>
+          </EntityContainer>
         <ComplexType Name="SP_GetAllOrderViewModels_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
           <Property Type="String" Name="type" Nullable="false" MaxLength="10" />
@@ -711,8 +715,8 @@
           <Property Name="total" Type="Decimal" Precision="20" Scale="5" />
           <Property Name="contactId" Type="Int32" />
           <Property Name="creationDateTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="vat" Type="Boolean" />
           <Property Name="currencyId" Type="Int32" />
+          <Property Name="vat" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="TblContact" Relationship="BCMY_StockModel.FK__TblOrder__contac__76619304" FromRole="TblOrder" ToRole="TblContact" />
           <NavigationProperty Name="TblCurrency" Relationship="BCMY_StockModel.FK__TblOrder__curren__12FDD1B2" FromRole="TblOrder" ToRole="TblCurrency" />
           <NavigationProperty Name="TblNegotiations" Relationship="BCMY_StockModel.FK__TblNegoti__order__7E02B4CC" FromRole="TblOrder" ToRole="TblNegotiation" />
@@ -766,7 +770,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -1137,8 +1141,8 @@
           <EntitySetMapping Name="TblOrders">
             <EntityTypeMapping TypeName="BCMY_StockModel.TblOrder">
               <MappingFragment StoreEntitySet="TblOrder">
-                <ScalarProperty Name="currencyId" ColumnName="currencyId" />
                 <ScalarProperty Name="vat" ColumnName="vat" />
+                <ScalarProperty Name="currencyId" ColumnName="currencyId" />
                 <ScalarProperty Name="creationDateTime" ColumnName="creationDateTime" />
                 <ScalarProperty Name="contactId" ColumnName="contactId" />
                 <ScalarProperty Name="total" ColumnName="total" />

@@ -46,7 +46,7 @@ namespace DataAccess_EF.EntityFramework
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("SP_ConfirmOrder", orderIdParameter);
         }
     
-        public virtual ObjectResult<Nullable<int>> SP_CreateOrder(Nullable<int> companyId, string contactFulName, string type)
+        public virtual ObjectResult<Nullable<int>> SP_CreateOrder(Nullable<int> companyId, string contactFulName, string vat, Nullable<int> currencyId, string type)
         {
             var companyIdParameter = companyId.HasValue ?
                 new ObjectParameter("companyId", companyId) :
@@ -56,11 +56,19 @@ namespace DataAccess_EF.EntityFramework
                 new ObjectParameter("contactFulName", contactFulName) :
                 new ObjectParameter("contactFulName", typeof(string));
     
+            var vatParameter = vat != null ?
+                new ObjectParameter("vat", vat) :
+                new ObjectParameter("vat", typeof(string));
+    
+            var currencyIdParameter = currencyId.HasValue ?
+                new ObjectParameter("currencyId", currencyId) :
+                new ObjectParameter("currencyId", typeof(int));
+    
             var typeParameter = type != null ?
                 new ObjectParameter("type", type) :
                 new ObjectParameter("type", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("SP_CreateOrder", companyIdParameter, contactFulNameParameter, typeParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("SP_CreateOrder", companyIdParameter, contactFulNameParameter, vatParameter, currencyIdParameter, typeParameter);
         }
     
         public virtual ObjectResult<SP_GetAllOrderViewModels_Result> SP_GetAllOrderViewModels()
