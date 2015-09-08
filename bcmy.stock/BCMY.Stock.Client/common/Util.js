@@ -145,4 +145,34 @@
         } else return o.selectionStart
     }
 
+    // returns currency html entity value based on currency string passed
+    function getCurrencyHtmlEntityValue(currencyStr)
+    {
+        currencyStr = currencyStr.toUpperCase();
+        var currencyHtmlEntVal = '';
+        switch (currencyStr) {
+            case 'GBP':
+                {
+                    currencyHtmlEntVal = '&#163';
+                    break;
+                }
+            case 'EURO':
+                {
+                    currencyHtmlEntVal = '&#8364;'
+                    break;
+                }
+            case 'USD':
+                {
+                    currencyHtmlEntVal = '&#36;';
+                    break;
+                }
+            default:
+                {
+                    currencyHtmlEntVal = '&#163';
+                    break;
+                }
+        }
+        return currencyHtmlEntVal;
+    }
+
 //}());

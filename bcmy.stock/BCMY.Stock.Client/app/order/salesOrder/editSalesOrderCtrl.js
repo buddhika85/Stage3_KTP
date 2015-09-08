@@ -678,7 +678,7 @@
                         { "mData": "productbrandid", "sTitle": "Brand ID", "bVisible": false },
                         { "mData": "productbrandname", "sTitle": "Brand" },
                         { "mData": "model", "sTitle": "Model" },
-                        { "mData": "marketvalue", "sTitle": "Market value &#163", "bVisible": false },
+                        { "mData": "marketvalueGBP", "sTitle": "Market value &#163", "bVisible": false },
                         { "mData": "stockCount", "sTitle": "Stock count" },
                         { "sTitle": "View More", "defaultContent": "<button class='productInfo'>Negotiate</button>" }
                 ],
@@ -716,8 +716,10 @@
         var condition = prodFrmGrid.conditionName;
         var brand = prodFrmGrid.productbrandname;
         var model = prodFrmGrid.model;
-        var marketValue = '';
+        var marketValueGBP = '';
+        var marketValueSpecificCurr = '';
         var stockCount = '';
+        var selectedCurrency = $('#selectCurrency option:selected').text().toUpperCase();
 
         // get market value and stock count     
         $http({
@@ -726,9 +728,11 @@
             url: ('http://localhost:61945/api/ProductInfo?productlistId=' + productListId),
         }).success(function (data) {
             if (data != null) {
-                marketValue = data.marketvalue;
+                marketValueGBP = data.marketvalueGBP;
+                marketValueSpecificCurr = GetMarketValueFromSpecificCurrency(selectedCurrency, data);
                 stockCount = data.stockCount;
-                DisplayNegotiationPopup($http, productListId, category, condition, brand, model, marketValue, stockCount);
+
+                DisplayNegotiationPopup($http, productListId, category, condition, brand, model, marketValueGBP, marketValueSpecificCurr, stockCount, selectedCurrency);
             }
             else {
                 alert('error - web service access - cound not find a product with Id - ' + productListId + ' - please contact IT helpdesk');
@@ -740,8 +744,33 @@
         });
     }
 
+    // function used to return market value with order specific currency
+    function GetMarketValueFromSpecificCurrency(selectedCurrency, data)
+    {
+        var marketValueSpecificCurr = "";
+        // switch to select market value in order specific currency        
+        switch (selectedCurrency) {
+            case "GBP":
+                {
+                    marketValueSpecificCurr = data.marketvalueGBP;
+                    break;
+                }
+            case "USD":
+                {
+                    marketValueSpecificCurr = data.marketvalueUSD;
+                    break;
+                }
+            case "EURO":
+                {
+                    marketValueSpecificCurr = data.marketvalueEuro;
+                    break;
+                }
+        }
+        return marketValueSpecificCurr;
+    }
+
     // used to display the product negotiation popup
-    function DisplayNegotiationPopup($http, productListId, category, condition, brand, model, marketValue, stockCount)
+    function DisplayNegotiationPopup($http, productListId, category, condition, brand, model, marketValueGBP, marketValueSpecificCurr, stockCount, selectedCurrency)
     {        
         // populate the popup
         $('#productListId').val(productListId);
@@ -749,7 +778,7 @@
         $('#lblCondition').text(condition);
         $('#lblBrand').text(brand);
         $('#lblModel').text(model);
-        $('#lblMktVal').text('£ ' + marketValue);
+        $('#lblMktVal').html('£ ' + RoundUpTo(marketValueGBP, 2) + ' | ' + getCurrencyHtmlEntityValue(selectedCurrency) + ' ' + RoundUpTo(marketValueSpecificCurr, 2));
         $('#lblStockCount').text(stockCount);
 
         // clean negotiation form
@@ -1320,8 +1349,8 @@
     }
 
     // used to select orders VAT and currency selections
-    function populateVatandCurrency(orderVm) {
-        $('#selectCurrency').val(orderVm.currency);
+    function populateVatandCurrency(orderVm) {        
+        $('#selectCurrency').val(orderVm.currencyId);
         $('#selectVAT').val(orderVm.vat);
     }
 

@@ -29,11 +29,14 @@ namespace BCMY.WebAPI.Controllers
 
 
         // GET: api/Currency
-        public IEnumerable<TblCurrency> Get()
+        public IList<TblCurrency> Get()
         {
             try
             {
-                return currencyRepository.GetAll();
+                //var currencies = currencyRepository.GetAll().ToList<TblCurrency>();
+                // call stored procedure via repository
+                IList<TblCurrency> currencies = currencyRepository.SQLQuery<TblCurrency>("SP_GetAllCurrencies").ToList<TblCurrency>();
+                return currencies;
             }
             catch (Exception)
             {

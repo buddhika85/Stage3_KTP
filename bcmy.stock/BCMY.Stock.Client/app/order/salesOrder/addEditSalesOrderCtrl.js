@@ -1275,6 +1275,7 @@
     function populateCurrencyDDL(currencyResource) {
         currencyResource.query(function (data) {            // REST API call to get all the currencies
             var listitems = '';
+            debugger
             $.each(data, function (index, item) {
                 if (item.name == "GBP") {
                     listitems += '<option value=' + item.id + ' selected=true>' + item.name + '</option>';

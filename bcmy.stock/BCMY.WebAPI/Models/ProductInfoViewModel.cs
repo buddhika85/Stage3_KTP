@@ -22,7 +22,11 @@ namespace BCMY.WebAPI.Models
         public string status { get; set; }
         public int productbrandid { get; set; }
         public string productbrandname { get; set; }
-        public decimal marketvalue { get; set; }
+        
+        public decimal marketvalueGBP { get; set; }
+        public decimal marketvalueEuro { get; set; }
+        public decimal marketvalueUSD { get; set; }
+
         public Nullable<int> actionId { get; set; }
         public string productActionName { get; set; }
         public string producttypeid { get; set; }
