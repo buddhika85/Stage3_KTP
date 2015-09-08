@@ -35,7 +35,9 @@ namespace BCMY.WebAPI.Controllers
         {
             try
             {
-                return customerSupplierRepository.GetAll();                
+                //customerSupplierRepository.GetAll().ToList <TblCustomerSupplier>();
+                IList<TblCustomerSupplier> custSups = customerSupplierRepository.SQLQuery<TblCustomerSupplier>("SP_GetAllCustomerSuppliers").ToList<TblCustomerSupplier>(); 
+                return custSups;                
             }
             catch (Exception)
             {
