@@ -46,7 +46,8 @@ namespace DataAccess_EF.ViewModels
         public int? brandId { get; set; }
         public string brand { get; set; }
 
-        public Decimal? marketvalue { get; set; }
+        public Decimal? marketvalueGBP { get; set; }
+        public Decimal? marketValueSpecificCurr { get; set; }
         public int? stockCount { get; set; }
     }
 }

@@ -762,8 +762,10 @@
     }
 
     // Used to edit an existing orderline
-    function DisplayEditOrderLinePopup($http, productListId, category, condition, brand, model, marketValue, stockCount, quantityAsked, negotiatedPricePerItem, totalAsked, status)
+    // marketValueGBP, marketValueSpecificCurr, stockCount, selectedCurrency)
+    function DisplayEditOrderLinePopup($http, productListId, category, condition, brand, model, marketValueGBP, stockCount, quantityAsked, negotiatedPricePerItem, totalAsked, status, selectedCurrency, marketValueSpecificCurr)
     {
+        debugger
 		// get status numeric value for selection 
         FindStatus($http, status);
 		
@@ -773,7 +775,9 @@
         $('#lblCondition').text(condition);
         $('#lblBrand').text(brand);
         $('#lblModel').text(model);
-        $('#lblMktVal').text('£ ' + marketValue);
+        //$('#lblMktVal').text('£ ' + marketValue);
+        $('#lblMktVal').html('£ ' + RoundUpTo(marketValueGBP, 2) + ' | ' + getCurrencyHtmlEntityValue(selectedCurrency) + ' ' + RoundUpTo(marketValueSpecificCurr, 2));
+
         $('#lblStockCount').text(stockCount);
 
         // clean negotiation form
@@ -1094,17 +1098,20 @@
 
     // edit orderline
     function OnOrderLineEditBtnClick(dataRow, $http)
-    {       
+    {
+        debugger;
         //alert('Edit order line id : ' + dataRow.id);
-        var serverUrl = 'http://localhost:61945/api/Orderline?orderlineId=' + dataRow.id;
+        var selectedCurrency = $('#selectCurrency option:selected').text().toUpperCase();
+        var serverUrl = 'http://localhost:61945/api/Orderline?orderlineId=' + dataRow.id + '&orderCurrency=' + selectedCurrency;
         DisplayErrorMessage('', $('#lblErrorOrderLineMessage'));
         $http({
             method: "get",
             headers: { 'Content-Type': 'application/json' },
             url: serverUrl
-        }).success(function (data) {            
-            DisplayEditOrderLinePopup($http, data.productId, data.category, data.condition, data.brand, data.model, data.marketvalue, data.stockCount,
-                dataRow.quantity, dataRow.negotiatedPricePerItem, dataRow.totalAmount, data.status);
+        }).success(function (data) {           
+            
+            DisplayEditOrderLinePopup($http, data.productId, data.category, data.condition, data.brand, data.model, data.marketvalueGBP, data.stockCount,
+                dataRow.quantity, dataRow.negotiatedPricePerItem, dataRow.totalAmount, data.status, selectedCurrency, data.marketValueSpecificCurr);
         }
         ).error(function (data) {
             // display error message

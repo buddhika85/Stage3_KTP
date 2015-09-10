@@ -80,7 +80,7 @@ namespace BCMY.WebAPI.Controllers
             try
             { 
                 // call stored procedure via repository
-                var result = orderLineRepository.SQLQuery<OrderLineViewModel>("SP_GetOrderLinesByOrderId @orderIdVal",                       
+                var result = orderLineRepository.SQLQuery<OrderLineViewModel>("SP_GetOrderLinesByOrderId, @orderIdVal",                       
                     new SqlParameter("orderIdVal", SqlDbType.Int) { Value = orderIdVal });
 
                 // convert the result orderlines (by order ID)
@@ -98,16 +98,17 @@ namespace BCMY.WebAPI.Controllers
         /// <summary>
         /// Get orderline info by orderline Id
         /// </summary>
-        /// http://localhost:61945/api/Orderline?orderlineId=1
+        /// http://localhost:61945/api/Orderline?orderlineId=1&orderCurrency=GBP
         [HttpGet, ActionName("GetOrderLineInfoByOrderlineId")]
-        public OrderLineViewModel GetOrderLineInfoByOrderlineId(int orderlineId)
+        public OrderLineViewModel GetOrderLineInfoByOrderlineId(int orderlineId, string orderCurrency)
         {
             try
             {
                 
                 // call stored procedure via repository
-                var result = orderLineRepository.SQLQuery<OrderLineViewModel>("SP_GetOrderlineInfoById @orderlineId",
-                    new SqlParameter("orderlineId", SqlDbType.Int) { Value = orderlineId });
+                var result = orderLineRepository.SQLQuery<OrderLineViewModel>("SP_GetOrderlineInfoById @orderlineId, @orderCurrency",
+                    new SqlParameter("orderlineId", SqlDbType.Int) { Value = orderlineId },
+                    new SqlParameter("orderCurrency", SqlDbType.VarChar) { Value = orderCurrency });
 
                 // convert the result to orderline
                 OrderLineViewModel olVm = result.FirstOrDefault<OrderLineViewModel>();
