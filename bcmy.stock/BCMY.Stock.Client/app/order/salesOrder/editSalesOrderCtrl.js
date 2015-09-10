@@ -227,6 +227,9 @@
 
     // used to calculate and display the total income on quantity or price offered inputs changed
     function calculateTotalIncome() {
+        //debugger
+        $('#totalIncomeLbl').html("Total Value (" +
+           getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ") = ");
         try
         {
             var quantity = $('#quantityInput').val();
@@ -891,7 +894,9 @@
     // display successful negotiations table
     function DrawSuccessNegotiationsGrid(successNegos, compnayName)
     {           
-        var htmlTable = "<table class='table table-condensed table-striped table-bordered'><tr><th>Company</th><th>Contact</th><th>Date</th><th>Time</th><th>Qty</th><th>PPI (£)</th><th>Total (£)</th></tr>";
+        var htmlTable = "<table class='table table-condensed table-striped table-bordered'><tr><th>Company</th><th>Contact</th><th>Date</th><th>Time</th><th>Qty</th><th>PPI (" +
+            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th><th>Total (" +
+            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th></tr>";
         if (successNegos != null && successNegos.length > 0) {
 
             $.each(successNegos, function (index, item) {
@@ -1002,7 +1007,9 @@
     // Used to draw the negotiation grid
     function DrawNegotiationsGrid(negotiations)
     {        
-        var htmlTable = "<table class='table table-condensed table-bordered'><tr><th>Date</th><th>Time</th><th>Qty</th><th>PPI (£)</th><th>Total (£)</th><th>Status</th></tr>";
+        var htmlTable = "<table class='table table-condensed table-bordered'><tr><th>Date</th><th>Time</th><th>Qty</th><th>PPI (" +
+            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th><th>Total (" +
+            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th><th>Status</th></tr>";
         if (negotiations != null && negotiations.length > 0) {
             
             $.each(negotiations, function (index, item) {
@@ -1352,9 +1359,14 @@
     }
 
     // used to select orders VAT and currency selections
-    function populateVatandCurrency(orderVm) {        
+    function populateVatandCurrency(orderVm) {
+        
         $('#selectCurrency').val(orderVm.currencyId);
+        //debugger
         $('#selectVAT').val(orderVm.vat);
+
+        $('#totalIncomeLbl').html("Total Value (" +
+           getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ") = ");
     }
 
     // used to select company ddl for the popups
@@ -1391,12 +1403,13 @@
         currencyResource.query(function (data) {            // REST API call to get all the currencies
             var listitems = '';
             $.each(data, function (index, item) {
-                if (item.name == "GBP") {
-                    listitems += '<option value=' + item.id + ' selected=true>' + item.name + '</option>';
-                }
-                else {
-                    listitems += '<option value=' + item.id + '>' + item.name + '</option>';
-                }
+                //    if (item.name == "GBP") {
+                //        listitems += '<option value=' + item.id + '>' + item.name + '</option>';
+                //    }
+                //    else {
+                //        listitems += '<option value=' + item.id + '>' + item.name + '</option>';
+                //    }
+                listitems += '<option value=' + item.id + '>' + item.name + '</option>';
             });
             $("#selectCurrency option").remove();
             $("#selectCurrency").append(listitems);

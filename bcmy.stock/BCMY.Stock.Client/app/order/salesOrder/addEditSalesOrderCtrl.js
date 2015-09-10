@@ -220,6 +220,8 @@
 
     // used to calculate and display the total income on quantity or price offered inputs changed
     function calculateTotalIncome() {
+        $('#totalIncomeLbl').html("Total Value (" +
+            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ") = ");
         try
         {
             var quantity = $('#quantityInput').val();
@@ -717,6 +719,8 @@
         $('#quantityInput').val('');
         $('#priceInput').val('');
         $('#statusSelect').val(-1);
+        $('#totalIncomeLbl').html("Total Value (" +
+            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ") = ");
         $('#totalIncome').text(0);
 
         DisplayErrorMessage('', $('#lblErrorManageNegotiation'));
@@ -827,7 +831,9 @@
     // display successful negotiations table
     function DrawSuccessNegotiationsGrid(successNegos, compnayName)
     {
-        var htmlTable = "<table class='table table-condensed table-striped table-bordered'><tr><th>Company</th><th>Contact</th><th>Date</th><th>Time</th><th>Qty</th><th>PPI (£)</th><th>Total (£)</th></tr>";
+        var htmlTable = "<table class='table table-condensed table-striped table-bordered'><tr><th>Company</th><th>Contact</th><th>Date</th><th>Time</th><th>Qty</th><th>PPI (" +
+            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th><th>Total (" +
+            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th></tr>";
         if (successNegos != null && successNegos.length > 0) {
 
             $.each(successNegos, function (index, item) {
@@ -938,7 +944,9 @@
     // Used to draw the negotiation grid
     function DrawNegotiationsGrid(negotiations)
     {        
-        var htmlTable = "<table class='table table-condensed table-bordered'><tr><th>Date</th><th>Time</th><th>Qty</th><th>PPI (£)</th><th>Total (£)</th><th>Status</th></tr>";
+        var htmlTable = "<table class='table table-condensed table-bordered'><tr><th>Date</th><th>Time</th><th>Qty</th><th>PPI (" +
+            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()); + ")</th><th>Total (" +
+            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()); + ")</th><th>Status</th></tr>";
         if (negotiations != null && negotiations.length > 0) {
             
             $.each(negotiations, function (index, item) {
