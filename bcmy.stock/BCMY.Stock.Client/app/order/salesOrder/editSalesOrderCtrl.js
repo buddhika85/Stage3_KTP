@@ -1086,7 +1086,10 @@
     function DrawOrderlineGrid(orderlines, $http, vm) {
         //DestroyTable();     // clear out search results
         // setting total income on the order
-        vm.totalValue = "Total : £ " + GetTotal(orderlines);
+        var selectedCurrency = $('#selectCurrency option:selected').text().toUpperCase();
+        //vm.totalValue = "Total : " + getCurrencyHtmlEntityValue(selectedCurrency) + ' ' + GetTotal(orderlines);
+        $('#totalOrdlines').html("Total : " + getCurrencyHtmlEntityValue(selectedCurrency) + ' ' + GetTotal(orderlines));
+        
         //alert("Total : £ " + GetTotal(orderlines));
         DisplayErrorMessage('', $('#lblErrorOrderLineMessage'));
         $('#orderGrid').empty();
@@ -1108,7 +1111,7 @@
                         { "mData": "model", "sTitle": "Model" },
                         { "mData": "quantity", "sTitle": "Quantity" },
                         {
-                            "mData": "negotiatedPricePerItem", "sTitle": "PPI (£)", "mRender": function (data, type, row) {
+                            "mData": "negotiatedPricePerItem", "sTitle": ("PPI (" + getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")"), "mRender": function (data, type, row) {
                                 if (data != null) {
                                     return RoundUpTo(data, 2);
                                 }
@@ -1119,7 +1122,7 @@
                             "aTargets": [0]
                         },
                         {
-                            "mData": "totalAmount", "sTitle": "Total (£)", "mRender": function (data, type, row) {
+                            "mData": "totalAmount", "sTitle": ("Total (" + getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")"), "mRender": function (data, type, row) {
                                 if (data != null) {
                                     return RoundUpTo(data, 2);
                                 }

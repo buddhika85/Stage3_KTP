@@ -209,7 +209,8 @@
                     <!--order related buttons -->
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label class="col-md-12 fontWeightNormal">{{vm.totalValue}}</label>
+                            <!--<label class="col-md-12 fontWeightNormal">{{vm.totalValue}}</label>-->
+                            <label class="col-md-12 fontWeightNormal" id="totalOrdlines"></label>
                         </div>
                         <div class="col-md-2">
                             <button class="col-md-12 fontWeightNormal" ng-click="vm.confirmOrder()" id="btnConfirmOdr">   Complete and Submit Order   </button>
@@ -222,30 +223,22 @@
                         <div class="col-md-1"></div>
                     </div>
                 </div>
-
             </fieldset>
         </div>
     </div>
-
-
     <!-- Modal to add order line, negotiation-->
     <div id="modelNegotiation" class="modal fade" role="dialog">
         <div class="modal-dialog">
-
             <!-- Modal content-->
             <div class="modal-content">
-
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title" id="modalTitle">Manage Negotiation</h4>
                 </div>
-
                 <div class="modal-body">
                     <!--Top level product info-->
                     <div class="panel panel-default">
-
                         <div class="panel-body">
-
                             <fieldset>
                                 <legend style="font-size:medium;">Top Level Product Info</legend>
                                 <div class="row">
@@ -254,13 +247,11 @@
                                         <label for="lblModel" class="fontWeightNormal">Model - </label>
                                         <label id="lblModel" class="darkBlueFont">Default</label>
                                     </div>
-
                                     <div class="col-md-4">
                                         <!--market value -->
                                         <label for="lblMktVal" class="fontWeightNormal">Market Value -</label>
                                         <label id="lblMktVal" class="darkBlueFont">Default</label>
                                     </div>
-
                                     <div class="col-md-4">
                                         <!--current stock count -->
                                         <label for="lblStockCount" class="fontWeightNormal">Stock Count - </label>
@@ -274,55 +265,44 @@
                                         <label for="lblCetegory" class="fontWeightNormal">Category - </label>
                                         <label id="lblCetegory" class="darkBlueFont">Default</label>
                                     </div>
-
                                     <div class="col-md-4">
                                         <!--condition-->
                                         <label for="lblCondition" class="fontWeightNormal">Condition - </label>
                                         <label id="lblCondition" class="darkBlueFont">Default</label>
                                     </div>
-
                                     <div class="col-md-4">
                                         <!--brand-->
                                         <label for="lblBrand" class="fontWeightNormal">Brand - </label>
                                         <label id="lblBrand" class="darkBlueFont">Default</label>
                                     </div>
-                                </div>                                
+                                </div>
                             </fieldset>
                         </div>
                     </div>
                     <!--End Top level product info-->
-
                     <!--Previouse 3 successful negotiations -->
                     <div class="panel panel-default">
-
                         <div class="panel-body">
-
                             <fieldset>
                                 <legend style="font-size:medium;">Previouse Successful Negotiations</legend>
                                 <div class="row table-responsive">
-
                                     <div class="col-md-12" id="successNegotiationsGridDiv">
                                     </div>
-
                                 </div>
                             </fieldset>
                         </div>
                     </div>
                     <!--End Previouse 3 successful negotiations -->
-
                     <!-- Current negotiation-->
                     <div class="panel panel-default">
-
                         <div class="panel-body">
                             <fieldset>
                                 <legend style="font-size:medium;">Current Negotiation</legend>
-
                                 <!--Negotiation History-->
                                 <div class="row table-responsive">
                                     <div class="col-md-12" id="orderNegotiationsGridDiv">
                                     </div>
                                 </div>
-                                    
                                 <!--form inputs -->
                                 <div class="row">
                                     <div class="form-inline col-md-4">
@@ -339,17 +319,15 @@
                                         </select>
                                     </div>
                                 </div>
-
                                 <!--Total income-->
                                 <div class="row">
                                     <div class="form-inline col-md-6">
                                         <label for="totalIncome">Total Value (£) = </label>
-                                        <label id="totalIncome" type="text" class="darkBlueFont" >0.0</label>                                            
-                                    </div>                                    
-                                    <div class="form-inline col-md-6">                                        
+                                        <label id="totalIncome" type="text" class="darkBlueFont" >0.0</label>
+                                    </div>
+                                    <div class="form-inline col-md-6">
                                     </div>
                                 </div>
-
                                 <!--Error message row-->
                                 <div class="row">
                                     <div class="col-md-12">
@@ -357,7 +335,6 @@
                                         <label class="control-label fontWeightNormal" style="color:red" id="lblErrorManageNegotiation">Error</label>
                                     </div>
                                 </div>
-
                                 <!--form buttons -->
                                 <div class="row">
                                     <div class="col-md-8">
@@ -367,22 +344,17 @@
                                     </div>
                                     <!--<div class="col-md-4"></div>-->
                                 </div>
-
                             </fieldset>
                         </div>
                     </div>
                     <!--End current negotiation-->
-
                 </div>
-
                 <div class="modal-footer">
                     <!--<button id="btnSave" type="button" class="btn btn-primary">Save</button>
                     <button id="btnCancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>-->
                 </div>
-
             </div>
         </div>
     </div>
     <!--End modal popup-->
-
 </div>
