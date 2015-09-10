@@ -136,8 +136,7 @@
     // if GBP --> yes or Else --> no
     function PerformDefaultVatSelections() {
         var currIndex = $('#selectCurrency').val();
-        var currText = $('#selectCurrency option:selected').text();
-        //debugger
+        var currText = $('#selectCurrency option:selected').text();        
         if (currIndex === "1" && currText === 'GBP') {
             $('#selectVAT').val('YES');
         }
@@ -764,8 +763,7 @@
     // Used to edit an existing orderline
     // marketValueGBP, marketValueSpecificCurr, stockCount, selectedCurrency)
     function DisplayEditOrderLinePopup($http, productListId, category, condition, brand, model, marketValueGBP, stockCount, quantityAsked, negotiatedPricePerItem, totalAsked, status, selectedCurrency, marketValueSpecificCurr)
-    {
-        debugger
+    {        
 		// get status numeric value for selection 
         FindStatus($http, status);
 		
@@ -1099,7 +1097,6 @@
     // edit orderline
     function OnOrderLineEditBtnClick(dataRow, $http)
     {
-        debugger;
         //alert('Edit order line id : ' + dataRow.id);
         var selectedCurrency = $('#selectCurrency option:selected').text().toUpperCase();
         var serverUrl = 'http://localhost:61945/api/Orderline?orderlineId=' + dataRow.id + '&orderCurrency=' + selectedCurrency;

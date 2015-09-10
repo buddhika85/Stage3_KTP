@@ -80,7 +80,7 @@ namespace BCMY.WebAPI.Controllers
             try
             { 
                 // call stored procedure via repository
-                var result = orderLineRepository.SQLQuery<OrderLineViewModel>("SP_GetOrderLinesByOrderId, @orderIdVal",                       
+                var result = orderLineRepository.SQLQuery<OrderLineViewModel>("SP_GetOrderLinesByOrderId @orderIdVal",                       
                     new SqlParameter("orderIdVal", SqlDbType.Int) { Value = orderIdVal });
 
                 // convert the result orderlines (by order ID)
