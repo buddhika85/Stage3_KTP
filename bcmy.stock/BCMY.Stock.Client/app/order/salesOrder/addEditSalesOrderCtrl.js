@@ -656,7 +656,7 @@
         var marketValueSpecificCurr = '';
         var stockCount = '';
         var selectedCurrency = $('#selectCurrency option:selected').text().toUpperCase();
-
+                
         // get market value and stock count     
         $http({
             method: "get",
@@ -725,13 +725,14 @@
 
         DisplayErrorMessage('', $('#lblErrorManageNegotiation'));
         
-        
+        //debugger
         var newOrderId  = $('#orderId').val();
         if (newOrderId != -1) {
             GetPreiouseSuccessfullNegotiaions($http, newOrderId, productListId);
             RefreshProductNegotiations($http, newOrderId, productListId);
         }
         else {
+            GetPreiouseSuccessfullNegotiaions($http, newOrderId, productListId)
             DrawSuccessNegotiationsGrid(null, null);
             DrawNegotiationsGrid(null);                                 // negotiations of the current product in the order
         }
@@ -812,8 +813,9 @@
     // get previouse successful negotions for the same product but different order
     function GetPreiouseSuccessfullNegotiaions($http, newOrderId, productListId)
     {
+        var selectedCurrency = $('#selectCurrency option:selected').text().toUpperCase();
         var currentCompany = $('#selectCustSupp').find(":selected").text();
-        var serverUrl = 'http://localhost:61945/api/Negotiation?orderId=' + newOrderId + '&productListId=' + productListId + '&confirmed=true' + '&custSupName=' + currentCompany + '&count=3';
+        var serverUrl = 'http://localhost:61945/api/Negotiation?orderId=' + newOrderId + '&productListId=' + productListId + '&confirmed=true' + '&custSupName=' + currentCompany + '&count=3&selectedCurrency=' + selectedCurrency;
         $http({
             method: "get",
             headers: { 'Content-Type': 'application/json' },

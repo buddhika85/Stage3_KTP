@@ -95,7 +95,7 @@ namespace BCMY.WebAPI.Controllers
         /// </summary>
         /// http://localhost:61945/api/Negotiation?orderId=30&productListId=107233&confirmed=true&custSupName=UniOfBrighton&count=10
         [HttpGet, ActionName("GetSuccessNegotiationsByOrderProductIds")]
-        public IEnumerable<NegotiationViewModel> GetSuccessNegotiationsByProductId(int orderId, int productListId, bool confirmed, string custSupName, int count)
+        public IEnumerable<NegotiationViewModel> GetSuccessNegotiationsByProductId(int orderId, int productListId, bool confirmed, string custSupName, int count, string selectedCurrency)
         {
             try
             {
@@ -105,9 +105,10 @@ namespace BCMY.WebAPI.Controllers
                 //    new SqlParameter("productListId", SqlDbType.Int) { Value = productListId },
                 //    new SqlParameter("count", SqlDbType.Int) { Value = count });
                 // call stored procedure via repository
-                var result = negotiationRepository.SQLQuery<NegotiationViewModel>("SP_GetSuccessNegotiationsByProductId @orderId, @productListId",
+                var result = negotiationRepository.SQLQuery<NegotiationViewModel>("SP_GetSuccessNegotiationsByProductId @orderId, @productListId, @selectedCurrency",
                     new SqlParameter("orderId", SqlDbType.Int) { Value = orderId },
-                    new SqlParameter("productListId", SqlDbType.Int) { Value = productListId });
+                    new SqlParameter("productListId", SqlDbType.Int) { Value = productListId },
+                    new SqlParameter("selectedCurrency", SqlDbType.VarChar) { Value = selectedCurrency });
 
                 // convert the result to a negotiation View Model list
                 IList<NegotiationViewModel> negotiationVms = result.ToList<NegotiationViewModel>();
