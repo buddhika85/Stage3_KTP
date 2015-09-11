@@ -76,7 +76,7 @@
         var orderType = $('#statusOrderType').val();
         var creationDateFrom = $('#fromDatePicker').val() == '' ? '' : $('#fromDatePicker').val();
         var creationDateTo = $('#toDatePicker').val() == '' ? '' : $('#toDatePicker').val();
-
+                
         var serverUrl = ('http://localhost:61945/api/order?companyId=' + companyId + '&contactFulName=' + contactFulName + '&orderId=' + orderId + '&status=' + status +
                     '&orderType=' + orderType + '&creationDateFrom=' +  creationDateFrom + '&creationDateTo=' + creationDateTo);
 
@@ -106,7 +106,18 @@
                         { "mData": "id", "sTitle": "Id"},
                         { "mData": "type", "sTitle": "Type"},
                         { "mData": "status", "sTitle": "Status" },
-                        { "mData": "total", "sTitle": "Total (£)", "mRender": function (data, type, row) {
+                        {
+                            "mData": "currency", "sTitle": "Currency", "sClass": "right", "mRender": function (data, type, row) {
+                                if (data != null) {
+                                    return getCurrencyHtmlEntityValue(data);
+                                }
+                                else {
+                                    return '£';
+                                }
+                            },
+                            "aTargets": [0]
+                        },
+                        { "mData": "total", "sTitle": "Total", "mRender": function (data, type, row) {
                                 if (data != null) {
                                     return RoundUpTo(data, 2);
                                 }
