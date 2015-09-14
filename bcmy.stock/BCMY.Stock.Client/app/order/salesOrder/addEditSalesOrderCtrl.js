@@ -712,7 +712,11 @@
         $('#lblCondition').text(condition);
         $('#lblBrand').text(brand);
         $('#lblModel').text(model);
-        $('#lblMktVal').html('£ ' + RoundUpTo(marketValueGBP, 2) + ' | ' + getCurrencyHtmlEntityValue(selectedCurrency) + ' ' + RoundUpTo(marketValueSpecificCurr, 2));
+        if (selectedCurrency == 'GBP')
+            $('#lblMktVal').html('£ ' + RoundUpTo(marketValueGBP, 2));
+        else
+            $('#lblMktVal').html('£ ' + RoundUpTo(marketValueGBP, 2) + ' | ' + getCurrencyHtmlEntityValue(selectedCurrency) + ' ' + RoundUpTo(marketValueSpecificCurr, 2));
+
         $('#lblStockCount').text(stockCount);
 
         // clean negotiation form
@@ -779,7 +783,10 @@
         $('#lblBrand').text(brand);
         $('#lblModel').text(model);
         //$('#lblMktVal').text('£ ' + marketValue);
-        $('#lblMktVal').html('£ ' + RoundUpTo(marketValueGBP, 2) + ' | ' + getCurrencyHtmlEntityValue(selectedCurrency) + ' ' + RoundUpTo(marketValueSpecificCurr, 2));
+        if (selectedCurrency == 'GBP')
+            $('#lblMktVal').html('£ ' + RoundUpTo(marketValueGBP, 2));
+        else
+            $('#lblMktVal').html('£ ' + RoundUpTo(marketValueGBP, 2) + ' | ' + getCurrencyHtmlEntityValue(selectedCurrency) + ' ' + RoundUpTo(marketValueSpecificCurr, 2));
 
         $('#lblStockCount').text(stockCount);
 
