@@ -136,7 +136,7 @@
                         { "mData": "orderCreationDate", "sTitle": "Date" },
                         { "mData": "orderCreationTime", "sTitle": "Time" },
 
-                        { "sTitle": "Edit Order", "defaultContent": "<button class='businessEdit'>Edit</button>" },
+                        { "sTitle": "Edit Order", "defaultContent": "<button class='orderSearchEdit'>Edit</button>" },
                 ],
                 "bDestroy": true,
                 "aLengthMenu": [[10, 25, 100, -1], [10, 25, 100, "All"]],
@@ -147,7 +147,7 @@
             var table = $('#ordersGrid').DataTable();
 
             // on info button clicks
-            $('#ordersGrid tbody').on('click', 'button.businessEdit', function () {
+            $('#ordersGrid tbody').on('click', 'button.orderSearchEdit', function () {
                 var dataRow = table.row($(this).parents('tr')).data();
                 //alert("View Info : " + data.productlistId + " - " + data.model);
                 onOrderEditBtnClick(dataRow, $http, $location, $rootScope);
@@ -159,10 +159,16 @@
     function onOrderEditBtnClick(dataRow, $http, $location, $rootScope)
     {
         var orderId = dataRow.id;
-        $rootScope.$apply(function () {
-            // pass order Id to edit order page
-            $location.path("/order/salesOrder/editSalesOrder").search({ orderId: orderId });
-        });
+        //debugger
+        if (orderId != null) {
+            $rootScope.$apply(function () {
+                // pass order Id to edit order page
+                $location.path("/order/salesOrder/editSalesOrder").search({ orderId: orderId });
+            });
+        }
+        else {
+            alert("Please refresh the page again - CTRL + F5");
+        }        
     }
 
     // used to reset search search criterias
