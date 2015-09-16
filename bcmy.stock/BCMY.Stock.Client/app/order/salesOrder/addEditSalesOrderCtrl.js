@@ -129,7 +129,7 @@
         // perform default VAT selections on currency selections
         $('#selectCurrency').click(function () {
             PerformDefaultVatSelections();
-        });
+        });        
     }
 
     // used to perform default VAT selections

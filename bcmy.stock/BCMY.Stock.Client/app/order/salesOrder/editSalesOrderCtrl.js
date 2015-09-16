@@ -574,7 +574,7 @@
 
         populateCategoryDropDown($http);
         populateStatusDropDown($http);
-        populateCurrencyDDL(currencyResource);
+        populateCurrencyDDL($http, vm);
        
         // enable product search form sections
         EnableDisableProductSearchForm(false);
@@ -583,7 +583,7 @@
         HideOrderDetailsBtns(false);
 
         // populate order details, orderlines details        
-        PopulateOrderDetails($http, vm);        
+        //PopulateOrderDetails($http, vm);
     }
 
     // populate order details, orderlines details
@@ -1369,7 +1369,7 @@
 
     // used to select orders VAT and currency selections
     function populateVatandCurrency(orderVm) {
-        
+
         $('#selectCurrency').val(orderVm.currencyId);
         //debugger
         $('#selectVAT').val(orderVm.vat);
@@ -1408,20 +1408,40 @@
     }
 
     // used to populate currency DDL
-    function populateCurrencyDDL(currencyResource) {
-        currencyResource.query(function (data) {            // REST API call to get all the currencies
+    function populateCurrencyDDL($http, vm) {
+        //currencyResource.query(function (data) {            // REST API call to get all the currencies
+        //    var listitems = '';
+        //    $.each(data, function (index, item) {
+        //        //    if (item.name == "GBP") {
+        //        //        listitems += '<option value=' + item.id + '>' + item.name + '</option>';
+        //        //    }
+        //        //    else {
+        //        //        listitems += '<option value=' + item.id + '>' + item.name + '</option>';
+        //        //    }
+        //        listitems += '<option value=' + item.id + '>' + item.name + '</option>';
+        //    });
+        //    $("#selectCurrency option").remove();
+        //    $("#selectCurrency").append(listitems);
+        //});
+
+        $http({
+            method: "get",
+            headers: { 'Content-Type': 'application/json' },
+            url: ('http://localhost:61945/api/currency'),
+        }).success(function (data) {
             var listitems = '';
-            $.each(data, function (index, item) {
-                //    if (item.name == "GBP") {
-                //        listitems += '<option value=' + item.id + '>' + item.name + '</option>';
-                //    }
-                //    else {
-                //        listitems += '<option value=' + item.id + '>' + item.name + '</option>';
-                //    }
+            $.each(data, function (index, item) {               
                 listitems += '<option value=' + item.id + '>' + item.name + '</option>';
             });
             $("#selectCurrency option").remove();
             $("#selectCurrency").append(listitems);
+
+            // as a fix to angular async call issue - bug on 16th Sep 2015
+            PopulateOrderDetails($http, vm);
+        }
+        ).error(function (data) {
+            // display error message
+            alert('error - web service access')
         });
     }
 }());
