@@ -37,3 +37,4 @@
 /// <reference path="../app/order/salesOrder/editSalesOrderCtrl.js" />
 /// <reference path="jquery.maskedinput.min.js" />
 /// <reference path="../common/currencyResource.js" />
+/// <reference path="GoogleCharts/corechart.js" />
