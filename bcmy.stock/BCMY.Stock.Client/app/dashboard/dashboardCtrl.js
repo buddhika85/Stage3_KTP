@@ -16,22 +16,22 @@
 
 
     // used to draw the exchange rates chart
+    // Ref - https://developers.google.com/chart/interactive/docs/gallery/linechart?hl=en
     function DrawExchangeRatesChart($http)
     {
-        $http.get('http://localhost:61945/api/ExchangeRate').
+        $http.get('http://localhost:61945/api/Chart?chartName=EXCHANGE_RATE_DEVIATION').
         then(function (response) {
-            
-            debugger
-            var twoDArray = [
-                              ['Year', 'Sales', 'Expenses'],
-                              ['2004',  1000,      400],
-                              ['2005',  1170,      460],
-                              ['2006',  660,       1120],
-                              ['2007',  1030,      540]
-                                ];
-            var data = new google.visualization.arrayToDataTable(twoDArray);
+             
+            // adapting data to the google charts
+            var array = $.parseJSON('[' + response.data + ']');           
+            var dataArray = [['Date', 'Usd', 'Euro']];
+            for (var i = 0; i < array[0].length; i++) {
+                dataArray.push([array[0][i].Date, array[0][i].Usd, array[0][i].Euro]);
+            }
+
+            var data = new google.visualization.arrayToDataTable(dataArray);
             var options = {
-                title: 'Exchange Rate Deviation',
+                title: 'Exchange Rate Deviation - USD and Euro with GBP',
                 curveType: 'function',
                 legend: { position: 'bottom' }
             };

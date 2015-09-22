@@ -98,5 +98,23 @@ namespace BCMY.WebAPI.Util
                 return null;
             }
         }
+
+        ///// <summary>
+        ///// Used to create a 3 D array
+        ///// </summary>
+        //public static object[][][] Create3DArray(IEnumerable<object> data)
+        //{
+        //    object[][][] threeDArray = null;
+        //    try
+        //    {
+
+        //    }
+        //    catch (Exception)
+        //    {
+        //        threeDArray = null;
+        //    }
+        //    return threeDArray;
+        //}
+
     }
 }
