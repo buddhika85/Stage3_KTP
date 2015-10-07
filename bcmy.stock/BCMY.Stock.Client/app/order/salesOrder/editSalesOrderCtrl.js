@@ -791,7 +791,7 @@
         $('#quantityInput').val('');
         $('#priceInput').val('');
         $('#statusSelect').val(-1);
-        $('#totalIncome').text(0);
+        $('#totalIncome').text(0.0);
 
         DisplayErrorMessage('', $('#lblErrorManageNegotiation'));
         
@@ -855,9 +855,9 @@
 
         // clean negotiation form
         $('#quantityInput').val(quantityAsked);
-        $('#priceInput').val(negotiatedPricePerItem);
+        $('#priceInput').val(RoundUpTo(negotiatedPricePerItem, 2));
         //$('#statusSelect').val(status);
-        $('#totalIncome').text(totalAsked);
+        $('#totalIncome').text(RoundUpTo(totalAsked, 2));
 
         DisplayErrorMessage('', $('#lblErrorManageNegotiation'));
 
