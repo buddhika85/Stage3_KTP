@@ -239,7 +239,7 @@
             isValid = false;
         }
 
-        if (isValid && isNullOrEmpty($('#inputPostCode'))) {
+        if (isValid && $('#selectCountry').val() == "United Kingdom" && isNullOrEmpty($('#inputPostCode'))) {
             ApplyErrorBorder($('#inputPostCode'));
             DisplayErrorMessage("Please provide a valid postcode");
             isValid = false;

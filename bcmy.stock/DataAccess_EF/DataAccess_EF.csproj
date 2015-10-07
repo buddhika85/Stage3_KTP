@@ -95,7 +95,16 @@
     <Compile Include="EntityFramework\productprice.cs">
       <DependentUpon>BcmyModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="EntityFramework\SP_GetAllCurrencies_Result.cs">
+      <DependentUpon>BcmyStockModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EntityFramework\SP_GetAllCustomerSuppliers_Result.cs">
+      <DependentUpon>BcmyStockModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="EntityFramework\SP_GetAllOrderViewModels_Result.cs">
+      <DependentUpon>BcmyStockModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EntityFramework\SP_GetChartsExchangeRatesDeviation_Result.cs">
       <DependentUpon>BcmyStockModel.tt</DependentUpon>
     </Compile>
     <Compile Include="EntityFramework\SP_GetContactsByCustomerSupplierId_Result.cs">

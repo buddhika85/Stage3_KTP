@@ -31,7 +31,7 @@ namespace DataAccess_EF.EntityFramework
         public string notes { get; set; }
         public Nullable<int> customerSupplierId { get; set; }
     
-        public virtual TblCustomerSupplier TblCustomerSupplier { get; set; }
         public virtual ICollection<TblOrder> TblOrders { get; set; }
+        public virtual TblCustomerSupplier TblCustomerSupplier { get; set; }
     }
 }

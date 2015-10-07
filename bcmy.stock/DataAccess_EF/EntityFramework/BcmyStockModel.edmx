@@ -59,7 +59,7 @@
           <Property Name="addressLine3" Type="varchar" MaxLength="30" />
           <Property Name="town" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="county" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="postcode" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="postcode" Type="varchar" MaxLength="10" />
           <Property Name="country" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="telephone" Type="varchar" MaxLength="25" Nullable="false" />
           <Property Name="bank" Type="varchar" MaxLength="30" />
@@ -188,6 +188,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="Func_GetCurrencyValueByTime" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="decimal">
+          <Parameter Name="orderCurrencyId" Type="int" Mode="In" />
+          <Parameter Name="value" Type="decimal" Mode="In" />
+          <Parameter Name="negDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="requiredCurrency" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="Func_GetERByCurrencyAndTime" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="decimal">
+          <Parameter Name="currency" Type="varchar" Mode="In" />
+          <Parameter Name="dateTime" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="Func_GetTodayERByCurrency" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="decimal">
+          <Parameter Name="currency" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="SP_ConfirmOrder" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="orderId" Type="int" Mode="In" />
         </Function>
@@ -198,7 +211,10 @@
           <Parameter Name="currencyId" Type="int" Mode="In" />
           <Parameter Name="type" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="SP_GetAllCurrencies" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="SP_GetAllCustomerSuppliers" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="SP_GetAllOrderViewModels" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="SP_GetChartsExchangeRatesDeviation" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="SP_GetContactInfo" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="contactId" Type="int" Mode="In" />
         </Function>
@@ -215,6 +231,7 @@
         </Function>
         <Function Name="SP_GetOrderlineInfoById" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="orderlineId" Type="int" Mode="In" />
+          <Parameter Name="orderCurrency" Type="varchar" Mode="In" />
         </Function>
         <Function Name="SP_GetOrderLinesByOrderId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="orderIdVal" Type="int" Mode="In" />
@@ -225,11 +242,16 @@
         <Function Name="SP_GetSuccessNegotiationsByProductId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="orderId" Type="int" Mode="In" />
           <Parameter Name="productListId" Type="int" Mode="In" />
+          <Parameter Name="selectedCurrency" Type="varchar" Mode="In" />
         </Function>
         <Function Name="SP_GetSuccessNumOfNegotiationsByProductId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="orderId" Type="int" Mode="In" />
           <Parameter Name="productListId" Type="int" Mode="In" />
           <Parameter Name="count" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_IncreaseStockCount" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="productListId" Type="int" Mode="In" />
+          <Parameter Name="incrementAmount" Type="int" Mode="In" />
         </Function>
         <Function Name="SP_InserUpdateExchangeRates" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="usd" Type="decimal" Mode="In" />
@@ -324,34 +346,8 @@
           <Property Name="status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="customerSupplierId" Type="Int32" />
-          <NavigationProperty Name="TblCustomerSupplier" Relationship="Self.FK__TblContac__custo__719CDDE7" FromRole="TblContact" ToRole="TblCustomerSupplier" />
           <NavigationProperty Name="TblOrders" Relationship="BCMY_StockModel.FK__TblOrder__contac__76619304" FromRole="TblContact" ToRole="TblOrder" />
-        </EntityType>
-        <EntityType Name="TblCustomerSupplier">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="name" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="logo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="addressLine1" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="addressLine2" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="addressLine3" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="town" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="county" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="postcode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="country" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="telephone" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="bank" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="vatNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="accountNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="sortcode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="iban" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="swift" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
-          <Property Name="creationDateTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="inactiveDateTime" Type="DateTime" Precision="3" />
-          <Property Name="active" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="TblContacts" Relationship="Self.FK__TblContac__custo__719CDDE7" FromRole="TblCustomerSupplier" ToRole="TblContact" />
+          <NavigationProperty Name="TblCustomerSupplier" Relationship="BCMY_StockModel.FK__TblContac__custo__719CDDE7" FromRole="TblContact" ToRole="TblCustomerSupplier" />
         </EntityType>
         <EntityType Name="TblNegotiation">
           <Key>
@@ -389,29 +385,12 @@
           <Property Name="productId" Type="Int32" Nullable="false" />
           <Property Name="quantity" Type="Int32" Nullable="false" />
         </EntityType>
-        <Association Name="FK__TblContac__custo__719CDDE7">
-          <End Role="TblCustomerSupplier" Type="Self.TblCustomerSupplier" Multiplicity="0..1" />
-          <End Role="TblContact" Type="Self.TblContact" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TblCustomerSupplier">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="TblContact">
-              <PropertyRef Name="customerSupplierId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="BCMY_StockEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="TblBusinesses" EntityType="Self.TblBusiness" />
           <EntitySet Name="TblContacts" EntityType="Self.TblContact" />
-          <EntitySet Name="TblCustomerSuppliers" EntityType="Self.TblCustomerSupplier" />
           <EntitySet Name="TblNegotiations" EntityType="Self.TblNegotiation" />
           <EntitySet Name="TblOrderLines" EntityType="Self.TblOrderLine" />
           <EntitySet Name="TblProductStocks" EntityType="Self.TblProductStock" />
-          <AssociationSet Name="FK__TblContac__custo__719CDDE7" Association="Self.FK__TblContac__custo__719CDDE7">
-            <End Role="TblCustomerSupplier" EntitySet="TblCustomerSuppliers" />
-            <End Role="TblContact" EntitySet="TblContacts" />
-          </AssociationSet>
           <FunctionImport Name="SP_ConfirmOrder" ReturnType="Collection(String)">
           <Parameter Name="orderId" Mode="In" Type="Int32" />
           </FunctionImport>
@@ -439,6 +418,7 @@
           </FunctionImport>
           <FunctionImport Name="SP_GetOrderlineInfoById" ReturnType="Collection(BCMY_StockModel.SP_GetOrderlineInfoById_Result)">
           <Parameter Name="orderlineId" Mode="In" Type="Int32" />
+            <Parameter Name="orderCurrency" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="SP_GetOrderLinesByOrderId" ReturnType="Collection(BCMY_StockModel.SP_GetOrderLinesByOrderId_Result)">
           <Parameter Name="orderIdVal" Mode="In" Type="Int32" />
@@ -449,6 +429,7 @@
           <FunctionImport Name="SP_GetSuccessNegotiationsByProductId" ReturnType="Collection(BCMY_StockModel.SP_GetSuccessNegotiationsByProductId_Result)">
             <Parameter Name="orderId" Mode="In" Type="Int32" />
             <Parameter Name="productListId" Mode="In" Type="Int32" />
+            <Parameter Name="selectedCurrency" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="SP_PopulateTblProductStockForTesting" />
           <FunctionImport Name="SP_SaveOrderLineWithNegotiation" ReturnType="Collection(BCMY_StockModel.SP_SaveOrderLineWithNegotiation_Result)">
@@ -499,6 +480,18 @@
             <End Role="TblOrder" EntitySet="TblOrders" />
             <End Role="TblOrderLine" EntitySet="TblOrderLines" />
           </AssociationSet>
+          <EntitySet Name="TblCustomerSuppliers" EntityType="BCMY_StockModel.TblCustomerSupplier" />
+          <AssociationSet Name="FK__TblContac__custo__719CDDE7" Association="BCMY_StockModel.FK__TblContac__custo__719CDDE7">
+            <End Role="TblCustomerSupplier" EntitySet="TblCustomerSuppliers" />
+            <End Role="TblContact" EntitySet="TblContacts" />
+          </AssociationSet>
+          <FunctionImport Name="SP_GetAllCurrencies" ReturnType="Collection(BCMY_StockModel.SP_GetAllCurrencies_Result)" />
+          <FunctionImport Name="SP_GetAllCustomerSuppliers" ReturnType="Collection(BCMY_StockModel.SP_GetAllCustomerSuppliers_Result)" />
+          <FunctionImport Name="SP_GetChartsExchangeRatesDeviation" ReturnType="Collection(BCMY_StockModel.SP_GetChartsExchangeRatesDeviation_Result)" />
+          <FunctionImport Name="SP_IncreaseStockCount">
+            <Parameter Name="productListId" Mode="In" Type="Int32" />
+            <Parameter Name="incrementAmount" Mode="In" Type="Int32" />
+          </FunctionImport>
           </EntityContainer>
         <ComplexType Name="SP_GetAllOrderViewModels_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
@@ -770,6 +763,76 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="TblCustomerSupplier">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="logo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="addressLine1" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="addressLine2" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="addressLine3" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="town" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="county" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="postcode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="country" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="telephone" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="bank" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="vatNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="accountNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="sortcode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="iban" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="swift" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="creationDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="inactiveDateTime" Type="DateTime" Precision="3" />
+          <Property Name="active" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="TblContacts" Relationship="BCMY_StockModel.FK__TblContac__custo__719CDDE7" FromRole="TblCustomerSupplier" ToRole="TblContact" />
+        </EntityType>
+        <Association Name="FK__TblContac__custo__719CDDE7">
+          <End Type="BCMY_StockModel.TblCustomerSupplier" Role="TblCustomerSupplier" Multiplicity="0..1" />
+          <End Type="BCMY_StockModel.TblContact" Role="TblContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TblCustomerSupplier">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="TblContact">
+              <PropertyRef Name="customerSupplierId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="SP_GetAllCurrencies_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="name" Nullable="false" MaxLength="500" />
+          <Property Type="String" Name="country" Nullable="false" MaxLength="500" />
+        </ComplexType>
+        <ComplexType Name="SP_GetAllCustomerSuppliers_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="name" Nullable="false" MaxLength="30" />
+          <Property Type="String" Name="logo" Nullable="true" />
+          <Property Type="String" Name="addressLine1" Nullable="false" MaxLength="30" />
+          <Property Type="String" Name="addressLine2" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="addressLine3" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="town" Nullable="false" MaxLength="30" />
+          <Property Type="String" Name="county" Nullable="false" MaxLength="30" />
+          <Property Type="String" Name="postcode" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="country" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="telephone" Nullable="false" MaxLength="25" />
+          <Property Type="String" Name="bank" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="vatNumber" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="accountNumber" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="sortcode" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="iban" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="swift" Nullable="true" MaxLength="11" />
+          <Property Type="DateTime" Name="creationDateTime" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="inactiveDateTime" Nullable="true" Precision="23" />
+          <Property Type="Boolean" Name="active" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="SP_GetChartsExchangeRatesDeviation_Result">
+          <Property Type="String" Name="Date" Nullable="true" MaxLength="10" />
+          <Property Type="Decimal" Name="Usd" Nullable="false" Precision="10" Scale="4" />
+          <Property Type="Decimal" Name="Euro" Nullable="false" Precision="10" Scale="4" />
+        </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -809,32 +872,6 @@
                 <ScalarProperty Name="status" ColumnName="status" />
                 <ScalarProperty Name="notes" ColumnName="notes" />
                 <ScalarProperty Name="customerSupplierId" ColumnName="customerSupplierId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TblCustomerSuppliers">
-            <EntityTypeMapping TypeName="BCMY_StockModel.TblCustomerSupplier">
-              <MappingFragment StoreEntitySet="TblCustomerSupplier">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="logo" ColumnName="logo" />
-                <ScalarProperty Name="addressLine1" ColumnName="addressLine1" />
-                <ScalarProperty Name="addressLine2" ColumnName="addressLine2" />
-                <ScalarProperty Name="addressLine3" ColumnName="addressLine3" />
-                <ScalarProperty Name="town" ColumnName="town" />
-                <ScalarProperty Name="county" ColumnName="county" />
-                <ScalarProperty Name="postcode" ColumnName="postcode" />
-                <ScalarProperty Name="country" ColumnName="country" />
-                <ScalarProperty Name="telephone" ColumnName="telephone" />
-                <ScalarProperty Name="bank" ColumnName="bank" />
-                <ScalarProperty Name="vatNumber" ColumnName="vatNumber" />
-                <ScalarProperty Name="accountNumber" ColumnName="accountNumber" />
-                <ScalarProperty Name="sortcode" ColumnName="sortcode" />
-                <ScalarProperty Name="iban" ColumnName="iban" />
-                <ScalarProperty Name="swift" ColumnName="swift" />
-                <ScalarProperty Name="creationDateTime" ColumnName="creationDateTime" />
-                <ScalarProperty Name="inactiveDateTime" ColumnName="inactiveDateTime" />
-                <ScalarProperty Name="active" ColumnName="active" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1152,6 +1189,77 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="TblCustomerSuppliers">
+            <EntityTypeMapping TypeName="BCMY_StockModel.TblCustomerSupplier">
+              <MappingFragment StoreEntitySet="TblCustomerSupplier">
+                <ScalarProperty Name="active" ColumnName="active" />
+                <ScalarProperty Name="inactiveDateTime" ColumnName="inactiveDateTime" />
+                <ScalarProperty Name="creationDateTime" ColumnName="creationDateTime" />
+                <ScalarProperty Name="swift" ColumnName="swift" />
+                <ScalarProperty Name="iban" ColumnName="iban" />
+                <ScalarProperty Name="sortcode" ColumnName="sortcode" />
+                <ScalarProperty Name="accountNumber" ColumnName="accountNumber" />
+                <ScalarProperty Name="vatNumber" ColumnName="vatNumber" />
+                <ScalarProperty Name="bank" ColumnName="bank" />
+                <ScalarProperty Name="telephone" ColumnName="telephone" />
+                <ScalarProperty Name="country" ColumnName="country" />
+                <ScalarProperty Name="postcode" ColumnName="postcode" />
+                <ScalarProperty Name="county" ColumnName="county" />
+                <ScalarProperty Name="town" ColumnName="town" />
+                <ScalarProperty Name="addressLine3" ColumnName="addressLine3" />
+                <ScalarProperty Name="addressLine2" ColumnName="addressLine2" />
+                <ScalarProperty Name="addressLine1" ColumnName="addressLine1" />
+                <ScalarProperty Name="logo" ColumnName="logo" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="SP_GetAllCurrencies" FunctionName="BCMY_StockModel.Store.SP_GetAllCurrencies">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BCMY_StockModel.SP_GetAllCurrencies_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="country" ColumnName="country" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_GetAllCustomerSuppliers" FunctionName="BCMY_StockModel.Store.SP_GetAllCustomerSuppliers">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BCMY_StockModel.SP_GetAllCustomerSuppliers_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="logo" ColumnName="logo" />
+                <ScalarProperty Name="addressLine1" ColumnName="addressLine1" />
+                <ScalarProperty Name="addressLine2" ColumnName="addressLine2" />
+                <ScalarProperty Name="addressLine3" ColumnName="addressLine3" />
+                <ScalarProperty Name="town" ColumnName="town" />
+                <ScalarProperty Name="county" ColumnName="county" />
+                <ScalarProperty Name="postcode" ColumnName="postcode" />
+                <ScalarProperty Name="country" ColumnName="country" />
+                <ScalarProperty Name="telephone" ColumnName="telephone" />
+                <ScalarProperty Name="bank" ColumnName="bank" />
+                <ScalarProperty Name="vatNumber" ColumnName="vatNumber" />
+                <ScalarProperty Name="accountNumber" ColumnName="accountNumber" />
+                <ScalarProperty Name="sortcode" ColumnName="sortcode" />
+                <ScalarProperty Name="iban" ColumnName="iban" />
+                <ScalarProperty Name="swift" ColumnName="swift" />
+                <ScalarProperty Name="creationDateTime" ColumnName="creationDateTime" />
+                <ScalarProperty Name="inactiveDateTime" ColumnName="inactiveDateTime" />
+                <ScalarProperty Name="active" ColumnName="active" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_GetChartsExchangeRatesDeviation" FunctionName="BCMY_StockModel.Store.SP_GetChartsExchangeRatesDeviation">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BCMY_StockModel.SP_GetChartsExchangeRatesDeviation_Result">
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Usd" ColumnName="Usd" />
+                <ScalarProperty Name="Euro" ColumnName="Euro" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_IncreaseStockCount" FunctionName="BCMY_StockModel.Store.SP_IncreaseStockCount" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -29,13 +29,13 @@ namespace DataAccess_EF.EntityFramework
     
         public virtual DbSet<TblBusiness> TblBusinesses { get; set; }
         public virtual DbSet<TblContact> TblContacts { get; set; }
-        public virtual DbSet<TblCustomerSupplier> TblCustomerSuppliers { get; set; }
         public virtual DbSet<TblNegotiation> TblNegotiations { get; set; }
         public virtual DbSet<TblOrderLine> TblOrderLines { get; set; }
         public virtual DbSet<TblProductStock> TblProductStocks { get; set; }
         public virtual DbSet<TblCurrency> TblCurrencies { get; set; }
         public virtual DbSet<TblExchangeRate> TblExchangeRates { get; set; }
         public virtual DbSet<TblOrder> TblOrders { get; set; }
+        public virtual DbSet<TblCustomerSupplier> TblCustomerSuppliers { get; set; }
     
         public virtual ObjectResult<string> SP_ConfirmOrder(Nullable<int> orderId)
         {
@@ -121,13 +121,17 @@ namespace DataAccess_EF.EntityFramework
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetNegotiationsByOrderProductIds_Result>("SP_GetNegotiationsByOrderProductIds", orderIdParameter, productListIdParameter);
         }
     
-        public virtual ObjectResult<SP_GetOrderlineInfoById_Result> SP_GetOrderlineInfoById(Nullable<int> orderlineId)
+        public virtual ObjectResult<SP_GetOrderlineInfoById_Result> SP_GetOrderlineInfoById(Nullable<int> orderlineId, string orderCurrency)
         {
             var orderlineIdParameter = orderlineId.HasValue ?
                 new ObjectParameter("orderlineId", orderlineId) :
                 new ObjectParameter("orderlineId", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetOrderlineInfoById_Result>("SP_GetOrderlineInfoById", orderlineIdParameter);
+            var orderCurrencyParameter = orderCurrency != null ?
+                new ObjectParameter("orderCurrency", orderCurrency) :
+                new ObjectParameter("orderCurrency", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetOrderlineInfoById_Result>("SP_GetOrderlineInfoById", orderlineIdParameter, orderCurrencyParameter);
         }
     
         public virtual ObjectResult<SP_GetOrderLinesByOrderId_Result> SP_GetOrderLinesByOrderId(Nullable<int> orderIdVal)
@@ -148,7 +152,7 @@ namespace DataAccess_EF.EntityFramework
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetOrderVmById_Result>("SP_GetOrderVmById", orderIdParameter);
         }
     
-        public virtual ObjectResult<SP_GetSuccessNegotiationsByProductId_Result> SP_GetSuccessNegotiationsByProductId(Nullable<int> orderId, Nullable<int> productListId)
+        public virtual ObjectResult<SP_GetSuccessNegotiationsByProductId_Result> SP_GetSuccessNegotiationsByProductId(Nullable<int> orderId, Nullable<int> productListId, string selectedCurrency)
         {
             var orderIdParameter = orderId.HasValue ?
                 new ObjectParameter("orderId", orderId) :
@@ -158,7 +162,11 @@ namespace DataAccess_EF.EntityFramework
                 new ObjectParameter("productListId", productListId) :
                 new ObjectParameter("productListId", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetSuccessNegotiationsByProductId_Result>("SP_GetSuccessNegotiationsByProductId", orderIdParameter, productListIdParameter);
+            var selectedCurrencyParameter = selectedCurrency != null ?
+                new ObjectParameter("selectedCurrency", selectedCurrency) :
+                new ObjectParameter("selectedCurrency", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetSuccessNegotiationsByProductId_Result>("SP_GetSuccessNegotiationsByProductId", orderIdParameter, productListIdParameter, selectedCurrencyParameter);
         }
     
         public virtual int SP_PopulateTblProductStockForTesting()
@@ -265,6 +273,34 @@ namespace DataAccess_EF.EntityFramework
                 new ObjectParameter("euro", typeof(decimal));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_InserUpdateExchangeRates", usdParameter, euroParameter, insertEditStatus);
+        }
+    
+        public virtual ObjectResult<SP_GetAllCurrencies_Result> SP_GetAllCurrencies()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetAllCurrencies_Result>("SP_GetAllCurrencies");
+        }
+    
+        public virtual ObjectResult<SP_GetAllCustomerSuppliers_Result> SP_GetAllCustomerSuppliers()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetAllCustomerSuppliers_Result>("SP_GetAllCustomerSuppliers");
+        }
+    
+        public virtual ObjectResult<SP_GetChartsExchangeRatesDeviation_Result> SP_GetChartsExchangeRatesDeviation()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetChartsExchangeRatesDeviation_Result>("SP_GetChartsExchangeRatesDeviation");
+        }
+    
+        public virtual int SP_IncreaseStockCount(Nullable<int> productListId, Nullable<int> incrementAmount)
+        {
+            var productListIdParameter = productListId.HasValue ?
+                new ObjectParameter("productListId", productListId) :
+                new ObjectParameter("productListId", typeof(int));
+    
+            var incrementAmountParameter = incrementAmount.HasValue ?
+                new ObjectParameter("incrementAmount", incrementAmount) :
+                new ObjectParameter("incrementAmount", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_IncreaseStockCount", productListIdParameter, incrementAmountParameter);
         }
     }
 }
