@@ -121,6 +121,28 @@ namespace BCMY.WebAPI.Controllers
         }
 
         /// <summary>
+        /// Used to change the status of the order to - confirm 
+        /// Returns a string message explaining the result
+        /// http://localhost:61945/api/Order?orderId=25
+        /// </summary>
+        [HttpGet, ActionName("ConfirmOrderLinesWithOrder")]
+        public string ConfirmOrder(int orderId)
+        {
+            try
+            {
+                // call stored procedure via repository
+                var result = orderLineRepository.SQLQuery<string>("SP_ConfirmOrderLinesWithOrder @orderId",
+                    new SqlParameter("orderId", SqlDbType.Int) { Value = orderId });
+
+                return result.FirstOrDefault<string>();
+            }
+            catch (Exception ex)
+            {
+                return "Error - Could not access the DB Server - Please contact IT Support";
+            }
+        }
+
+        /// <summary>
         /// Fixes date and time null issue
         /// </summary>
         private IList<OrderLineViewModel> FixDateTime(IList<OrderLineViewModel> orderLinesOfOrder)

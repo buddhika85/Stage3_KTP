@@ -356,4 +356,24 @@
         </div>
     </div>
     <!--End modal popup-->
+    
+    <!-- alert - for batch orderline confirm - popup -->  
+    <div id="modalBatchConfirm" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">                
+                <div class="modal-header">
+                    Batch Confirm - Orderlines   
+                </div>
+                <div class="modal-body">   
+                    <p>Do you want to confirm all unconfirmed orderlines and confirm the order?</p>                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" ng-click='vm.performBacthOrderlineConfirm()'>Yes</button>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end alert - for batch orderline confirm - popup -->  
+
 </div>

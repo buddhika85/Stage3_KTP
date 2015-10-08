@@ -16,18 +16,18 @@
         var salesOrderId = searchObject.orderId;
 
         vm.title = "Edit Sales Order : Id = " + salesOrderId;
+        
         $('#orderId').val(salesOrderId);     
         // set sales order Id
         prepareInitialUI($http, customerSupplierResource, contactResource, salesOrderId, currencyResource, vm);           // initial UI
         
 
-        wireCommands(vm, $http, contactResource, customerSupplierResource);
+        wireCommands(vm, $http, contactResource, customerSupplierResource, $location);
     };
 
     // used to bind drop down list selection change commands for cascading ddls
-    function wireCommands(vm, $http, contactResource, customerSupplierResource)
+    function wireCommands(vm, $http, contactResource, customerSupplierResource, $location)
     {
-
         // BindDDLSelectionChangeCommands
         // on a company selection
         $('#selectCustSupp').change(function () {
@@ -137,6 +137,11 @@
         $('#selectCurrency').click(function () {
             PerformDefaultVatSelections();
         });
+
+        // batch orderline confirm
+        vm.performBacthOrderlineConfirm = function () {
+            performBacthOrderlineConfirm($location, $http, vm);
+        };
     }
 
     // used to perform default VAT selections
@@ -152,6 +157,57 @@
         }
     }
 
+    // used to manage confirmation of batch of orderlines 
+    // Ref - uses http://bootboxjs.com/examples.html
+    function manageBatchOrderLineConfirm()
+    {
+        $('#modalBatchConfirm').modal({
+            show: true,
+            keyboard: true,
+            backdrop: true
+        });
+    }
+
+    // performing the batch confirm of all the orderlines in an order
+    function performBacthOrderlineConfirm($location, $http, vm)
+    {
+        $('#modalBatchConfirm').modal('hide');      // hide alert
+        
+        // pick orderId from query string
+        var orderId = $location.search().orderId;
+        //alert("perform the bacth confirm : " + orderId);
+
+        // perform the batch confirm -  confirm the order
+        $http({
+            method: "get",
+            headers: { 'Content-Type': 'application/json' },
+            url: ('http://localhost:61945/api/OrderLine?orderId=' + orderId)
+        })
+        .success(function (data) {            
+            if (data == 'Success - Order confirmation successful - with all orderlines') {
+                // refersh the orderline grid
+                $http({
+                    method: "get",
+                    headers: { 'Content-Type': 'application/json' },
+                    url: ('http://localhost:61945/api/Orderline?orderIdVal=' + orderId),
+                }).success(function (dataOL) {
+                    // redraw orderline grid and disable edit orderline and complete order buttons
+                    DrawOrderlineGrid(dataOL, $http, vm);
+                    DisableUIAfterConfirm();
+                    // display message about confirming order
+                    DisplayErrorMessage(data, $('#lblErrorOrderLineMessage'));
+                }
+                ).error(function (dataOL) {
+                    // display error message
+                    alert('error - web service access')
+                })
+            }           
+        }).error(function (data) {
+            // display error message
+            DisplayErrorMessage('Error - Order confirmation unsuccessful - error accessing web service', $('#lblErrorOrderLineMessage'));
+        });        
+    }
+
     // used to confirm an order
     function confirmOrder($http) {
 
@@ -160,10 +216,13 @@
         // check for row count in the table - header raw and empty raw makes 2
         if ($('#orderGrid tr:eq(1) > td:eq(0)').text() != 'No data available in table') //if ($('#orderGrid tr').length > 2)
         {
+            //debugger
             // check for orderline statuses - if all confimed - pass to server side
             var allConfimed = ValidateForOrderLineStatus();
             if (!allConfimed) {
-                DisplayErrorMessage('Warning - make sure that all the orderlines are confirmed before confirming the particular order', $('#lblErrorOrderLineMessage'));
+                // DisplayErrorMessage('Warning - make sure that all the orderlines are confirmed before confirming the particular order', $('#lblErrorOrderLineMessage'));
+                // manage batch confirm
+                manageBatchOrderLineConfirm();
             }
             else {
                 //alert('pass to server side - confirm');
@@ -211,12 +270,12 @@
     
     // check for orderline statuses - if all confimed - return true
     function ValidateForOrderLineStatus() {
-
+        //debugger
         var allConfimed = true;
 
         // get orderline data table
         var table = $('#orderGrid').DataTable();                
-        table.column(6).data().each(function (value, index) {       // column 6 is status - o based columns in JS datatable
+        table.column(10).data().each(function (value, index) {       // column 10 is status - o based columns in JS datatable
             //alert('Data in index: ' + index + ' is: ' + value);
             if (value == 'in negotiation') {
                 allConfimed = false;

@@ -209,7 +209,7 @@
 
         // get orderline data table
         var table = $('#orderGrid').DataTable();                
-        table.column(6).data().each(function (value, index) {       // column 6 is status - o based columns in JS datatable
+        table.column(10).data().each(function (value, index) {       // column 10 is status - o based columns in JS datatable
             //alert('Data in index: ' + index + ' is: ' + value);
             if (value == 'in negotiation') {
                 allConfimed = false;
