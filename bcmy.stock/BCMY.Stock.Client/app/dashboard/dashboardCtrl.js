@@ -7,11 +7,28 @@
 
     function dashboardCtrl($http)                   // controller funcion
     {
-        var vm = this;
-        vm.title = "Main Dashboard";
-        vm.exchangeRatesDateJson = null
+        //var vm = this;
+        //vm.title = "Main Dashboard";
+        //vm.exchangeRatesDateJson = null
 
-        DrawExchangeRatesChart($http);
+        //DrawExchangeRatesChart($http);
+        var vm = this;
+
+        //debugger
+        var password = null;
+        do {
+            password = prompt("Enter password : ");
+            //debugger;
+            if (password === 'test123$')
+            {
+
+                vm.title = "Main Dashboard";
+                vm.exchangeRatesDateJson = null;
+
+                DrawExchangeRatesChart($http);
+
+            }
+        } while (password === null || (!(password === 'test123$')));
     };
 
 
