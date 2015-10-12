@@ -129,7 +129,12 @@
         // perform default VAT selections on currency selections
         $('#selectCurrency').click(function () {
             PerformDefaultVatSelections();
-        });        
+        });
+
+        // batch orderline confirm
+        vm.performBacthOrderlineConfirm = function () {
+            performBacthOrderlineConfirm($http, vm);
+        };
     }
 
     // used to perform default VAT selections
@@ -145,6 +150,55 @@
         }
     }
 
+    // used to manage confirmation of batch of orderlines 
+    // Ref - uses http://bootboxjs.com/examples.html
+    function manageBatchOrderLineConfirm() {
+        $('#modalBatchConfirm').modal({
+            show: true,
+            keyboard: true,
+            backdrop: true
+        });
+    }
+
+    // performing the batch confirm of all the orderlines in an order
+    function performBacthOrderlineConfirm($http, vm) {
+        $('#modalBatchConfirm').modal('hide');      // hide alert
+        debugger
+        // pick orderId from hidden field
+        var orderId = $('#orderId').val();
+        //alert("perform the bacth confirm : " + orderId);
+
+        // perform the batch confirm -  confirm the order
+        $http({
+            method: "get",
+            headers: { 'Content-Type': 'application/json' },
+            url: ('http://localhost:61945/api/OrderLine?orderId=' + orderId)
+        })
+        .success(function (data) {
+            if (data == 'Success - Order confirmation successful - with all orderlines') {
+                // refersh the orderline grid
+                $http({
+                    method: "get",
+                    headers: { 'Content-Type': 'application/json' },
+                    url: ('http://localhost:61945/api/Orderline?orderIdVal=' + orderId),
+                }).success(function (dataOL) {
+                    // redraw orderline grid and disable edit orderline and complete order buttons
+                    DrawOrderlineGrid(dataOL, $http, vm);
+                    DisableUIAfterConfirm();
+                    // display message about confirming order
+                    DisplayErrorMessage(data, $('#lblErrorOrderLineMessage'));
+                }
+                ).error(function (dataOL) {
+                    // display error message
+                    alert('error - web service access')
+                })
+            }
+        }).error(function (data) {
+            // display error message
+            DisplayErrorMessage('Error - Order confirmation unsuccessful - error accessing web service', $('#lblErrorOrderLineMessage'));
+        });
+    }
+
     // used to confirm an order
     function confirmOrder($http) {
 
@@ -154,9 +208,12 @@
         if ($('#orderGrid tr:eq(1) > td:eq(0)').text() != 'No data available in table') //if ($('#orderGrid tr').length > 2)
         {
             // check for orderline statuses - if all confimed - pass to server side
+            debugger;
             var allConfimed = ValidateForOrderLineStatus();
             if (!allConfimed) {
-                DisplayErrorMessage('Warning - make sure that all the orderlines are confirmed before confirming the particular order', $('#lblErrorOrderLineMessage'));
+                //DisplayErrorMessage('Warning - make sure that all the orderlines are confirmed before confirming the particular order', $('#lblErrorOrderLineMessage'));
+                // manage batch confirm
+                manageBatchOrderLineConfirm();
             }
             else {
                 //alert('pass to server side - confirm');
