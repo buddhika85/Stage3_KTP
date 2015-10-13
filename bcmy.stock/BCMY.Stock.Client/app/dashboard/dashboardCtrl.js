@@ -15,20 +15,20 @@
         var vm = this;
 
         //debugger
-        var password = null;
-        do {
-            password = prompt("Enter password : ");
-            //debugger;
-            if (password === 'test123$')
-            {
+        //var password = null;
+        //do {
+        //    password = prompt("Enter password : ");
+        //    //debugger;
+        //    if (password === 'test123$')
+        //    {
 
                 vm.title = "Main Dashboard";
                 vm.exchangeRatesDateJson = null;
 
                 DrawExchangeRatesChart($http);
 
-            }
-        } while (password === null || (!(password === 'test123$')));
+        //    }
+        //} while (password === null || (!(password === 'test123$')));
     };
 
 

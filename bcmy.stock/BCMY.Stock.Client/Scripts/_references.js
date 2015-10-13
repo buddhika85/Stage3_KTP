@@ -38,3 +38,5 @@
 /// <reference path="jquery.maskedinput.min.js" />
 /// <reference path="../common/currencyResource.js" />
 /// <reference path="GoogleCharts/corechart.js" />
+/// <reference path="../app/order/pastData/pastExchangeRates/addPastExchangeRates.js" />
+/// <reference path="../app/order/pastData/pastSalesOrder/addPastSalesOrders.js" />
