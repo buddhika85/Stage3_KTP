@@ -80,6 +80,7 @@
           <Property Name="timeER" Type="time" Precision="7" Nullable="false" />
           <Property Name="usdValue" Type="decimal" Precision="10" Scale="4" Nullable="false" />
           <Property Name="euroValue" Type="decimal" Precision="10" Scale="4" Nullable="false" />
+          <Property Name="manualInput" Type="varchar" MaxLength="3" />
         </EntityType>
         <EntityType Name="TblNegotiation">
           <Key>
@@ -128,7 +129,7 @@
           <Property Name="productId" Type="int" Nullable="false" />
           <Property Name="quantity" Type="int" Nullable="false" />
         </EntityType>
-        <Association Name="FK__TblContac__custo__719CDDE7">
+        <Association Name="FK__TblContac__custo__239E4DCF">
           <End Role="TblCustomerSupplier" Type="Self.TblCustomerSupplier" Multiplicity="0..1" />
           <End Role="TblContact" Type="Self.TblContact" Multiplicity="*" />
           <ReferentialConstraint>
@@ -140,7 +141,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TblNegoti__order__7E02B4CC">
+        <Association Name="FK__TblNegoti__order__24927208">
           <End Role="TblOrder" Type="Self.TblOrder" Multiplicity="0..1" />
           <End Role="TblNegotiation" Type="Self.TblNegotiation" Multiplicity="*" />
           <ReferentialConstraint>
@@ -152,7 +153,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TblOrder__contac__76619304">
+        <Association Name="FK__TblOrder__contac__25869641">
           <End Role="TblContact" Type="Self.TblContact" Multiplicity="0..1" />
           <End Role="TblOrder" Type="Self.TblOrder" Multiplicity="*" />
           <ReferentialConstraint>
@@ -164,7 +165,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TblOrder__curren__12FDD1B2">
+        <Association Name="FK__TblOrder__curren__267ABA7A">
           <End Role="TblCurrencies" Type="Self.TblCurrencies" Multiplicity="0..1" />
           <End Role="TblOrder" Type="Self.TblOrder" Multiplicity="*" />
           <ReferentialConstraint>
@@ -176,7 +177,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TblOrderL__order__7A3223E8">
+        <Association Name="FK__TblOrderL__order__276EDEB3">
           <End Role="TblOrder" Type="Self.TblOrder" Multiplicity="0..1" />
           <End Role="TblOrderLine" Type="Self.TblOrderLine" Multiplicity="*" />
           <ReferentialConstraint>
@@ -202,6 +203,9 @@
           <Parameter Name="currency" Type="varchar" Mode="In" />
         </Function>
         <Function Name="SP_ConfirmOrder" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="orderId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_ConfirmOrderLinesWithOrder" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="orderId" Type="int" Mode="In" />
         </Function>
         <Function Name="SP_CreateOrder" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
@@ -278,6 +282,12 @@
           <Parameter Name="creationDateTo" Type="datetime" Mode="In" />
         </Function>
         <Function Name="SP_SearchOrders_Simple" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="SP_ValidateAndSavePastExchangeRates" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dateStr" Type="varchar" Mode="In" />
+          <Parameter Name="euroVal" Type="decimal" Mode="In" />
+          <Parameter Name="usdVal" Type="decimal" Mode="In" />
+          <Parameter Name="insertStatus" Type="varchar" Mode="InOut" />
+        </Function>
         <EntityContainer Name="BCMY_StockModelStoreContainer">
           <EntitySet Name="TblBusiness" EntityType="Self.TblBusiness" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TblContact" EntityType="Self.TblContact" Schema="dbo" store:Type="Tables" />
@@ -288,23 +298,23 @@
           <EntitySet Name="TblOrder" EntityType="Self.TblOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TblOrderLine" EntityType="Self.TblOrderLine" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TblProductStock" EntityType="Self.TblProductStock" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__TblContac__custo__719CDDE7" Association="Self.FK__TblContac__custo__719CDDE7">
+          <AssociationSet Name="FK__TblContac__custo__239E4DCF" Association="Self.FK__TblContac__custo__239E4DCF">
             <End Role="TblCustomerSupplier" EntitySet="TblCustomerSupplier" />
             <End Role="TblContact" EntitySet="TblContact" />
           </AssociationSet>
-          <AssociationSet Name="FK__TblNegoti__order__7E02B4CC" Association="Self.FK__TblNegoti__order__7E02B4CC">
+          <AssociationSet Name="FK__TblNegoti__order__24927208" Association="Self.FK__TblNegoti__order__24927208">
             <End Role="TblOrder" EntitySet="TblOrder" />
             <End Role="TblNegotiation" EntitySet="TblNegotiation" />
           </AssociationSet>
-          <AssociationSet Name="FK__TblOrder__contac__76619304" Association="Self.FK__TblOrder__contac__76619304">
+          <AssociationSet Name="FK__TblOrder__contac__25869641" Association="Self.FK__TblOrder__contac__25869641">
             <End Role="TblContact" EntitySet="TblContact" />
             <End Role="TblOrder" EntitySet="TblOrder" />
           </AssociationSet>
-          <AssociationSet Name="FK__TblOrder__curren__12FDD1B2" Association="Self.FK__TblOrder__curren__12FDD1B2">
+          <AssociationSet Name="FK__TblOrder__curren__267ABA7A" Association="Self.FK__TblOrder__curren__267ABA7A">
             <End Role="TblCurrencies" EntitySet="TblCurrencies" />
             <End Role="TblOrder" EntitySet="TblOrder" />
           </AssociationSet>
-          <AssociationSet Name="FK__TblOrderL__order__7A3223E8" Association="Self.FK__TblOrderL__order__7A3223E8">
+          <AssociationSet Name="FK__TblOrderL__order__276EDEB3" Association="Self.FK__TblOrderL__order__276EDEB3">
             <End Role="TblOrder" EntitySet="TblOrder" />
             <End Role="TblOrderLine" EntitySet="TblOrderLine" />
           </AssociationSet>
@@ -417,7 +427,7 @@
             <Parameter Name="productListId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SP_GetOrderlineInfoById" ReturnType="Collection(BCMY_StockModel.SP_GetOrderlineInfoById_Result)">
-          <Parameter Name="orderlineId" Mode="In" Type="Int32" />
+            <Parameter Name="orderlineId" Mode="In" Type="Int32" />
             <Parameter Name="orderCurrency" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="SP_GetOrderLinesByOrderId" ReturnType="Collection(BCMY_StockModel.SP_GetOrderLinesByOrderId_Result)">
@@ -491,6 +501,15 @@
           <FunctionImport Name="SP_IncreaseStockCount">
             <Parameter Name="productListId" Mode="In" Type="Int32" />
             <Parameter Name="incrementAmount" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_ConfirmOrderLinesWithOrder" ReturnType="Collection(String)">
+            <Parameter Name="orderId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_ValidateAndSavePastExchangeRates">
+            <Parameter Name="dateStr" Mode="In" Type="String" />
+            <Parameter Name="euroVal" Mode="In" Type="Decimal" />
+            <Parameter Name="usdVal" Mode="In" Type="Decimal" />
+            <Parameter Name="insertStatus" Mode="InOut" Type="String" />
           </FunctionImport>
           </EntityContainer>
         <ComplexType Name="SP_GetAllOrderViewModels_Result">
@@ -681,6 +700,7 @@
           <Property Name="timeER" Type="Time" Nullable="false" Precision="7" />
           <Property Name="usdValue" Type="Decimal" Nullable="false" Precision="10" Scale="4" />
           <Property Name="euroValue" Type="Decimal" Nullable="false" Precision="10" Scale="4" />
+          <Property Name="manualInput" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
         </EntityType>
         <ComplexType Name="SP_GetSuccessNumOfNegotiationsByProductId_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
@@ -1147,6 +1167,7 @@
           <EntitySetMapping Name="TblExchangeRates">
             <EntityTypeMapping TypeName="BCMY_StockModel.TblExchangeRate">
               <MappingFragment StoreEntitySet="TblExchangeRate">
+                <ScalarProperty Name="manualInput" ColumnName="manualInput" />
                 <ScalarProperty Name="euroValue" ColumnName="euroValue" />
                 <ScalarProperty Name="usdValue" ColumnName="usdValue" />
                 <ScalarProperty Name="timeER" ColumnName="timeER" />
@@ -1260,6 +1281,8 @@
             </ResultMapping>
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="SP_IncreaseStockCount" FunctionName="BCMY_StockModel.Store.SP_IncreaseStockCount" />
+          <FunctionImportMapping FunctionImportName="SP_ConfirmOrderLinesWithOrder" FunctionName="BCMY_StockModel.Store.SP_ConfirmOrderLinesWithOrder" />
+          <FunctionImportMapping FunctionImportName="SP_ValidateAndSavePastExchangeRates" FunctionName="BCMY_StockModel.Store.SP_ValidateAndSavePastExchangeRates" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

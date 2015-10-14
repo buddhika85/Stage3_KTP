@@ -302,5 +302,31 @@ namespace DataAccess_EF.EntityFramework
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_IncreaseStockCount", productListIdParameter, incrementAmountParameter);
         }
+    
+        public virtual ObjectResult<string> SP_ConfirmOrderLinesWithOrder(Nullable<int> orderId)
+        {
+            var orderIdParameter = orderId.HasValue ?
+                new ObjectParameter("orderId", orderId) :
+                new ObjectParameter("orderId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("SP_ConfirmOrderLinesWithOrder", orderIdParameter);
+        }
+    
+        public virtual int SP_ValidateAndSavePastExchangeRates(string dateStr, Nullable<decimal> euroVal, Nullable<decimal> usdVal, ObjectParameter insertStatus)
+        {
+            var dateStrParameter = dateStr != null ?
+                new ObjectParameter("dateStr", dateStr) :
+                new ObjectParameter("dateStr", typeof(string));
+    
+            var euroValParameter = euroVal.HasValue ?
+                new ObjectParameter("euroVal", euroVal) :
+                new ObjectParameter("euroVal", typeof(decimal));
+    
+            var usdValParameter = usdVal.HasValue ?
+                new ObjectParameter("usdVal", usdVal) :
+                new ObjectParameter("usdVal", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_ValidateAndSavePastExchangeRates", dateStrParameter, euroValParameter, usdValParameter, insertStatus);
+        }
     }
 }

@@ -103,6 +103,18 @@
         return true;
     }
 
+    // validation - on key press of numeric with decimal only <input /> tag
+    // avoids 2 times decimal points input
+    function isNumberKeyDecimal(evt, id) {
+        var containsDecimalDotBeforeKeyPress = document.getElementById(id).value.indexOf(".");  // -1 --> if decimal point not found
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46)
+            return false;
+        else if (charCode == 46 && containsDecimalDotBeforeKeyPress != -1)                      // avoid 2 times decimal points input
+            return false;
+        return true;
+    }
+
     // Limit decimal places to 2
     // After the decimal point key press, this will return false if user tries to input three decimal points
     // Ref - http://stackoverflow.com/questions/23221557/restrict-to-2-decimal-places-in-keypress-of-a-text-box and 

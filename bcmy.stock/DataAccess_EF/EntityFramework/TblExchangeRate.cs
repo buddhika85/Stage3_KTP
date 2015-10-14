@@ -18,5 +18,6 @@ namespace DataAccess_EF.EntityFramework
         public System.TimeSpan timeER { get; set; }
         public decimal usdValue { get; set; }
         public decimal euroValue { get; set; }
+        public string manualInput { get; set; }
     }
 }
