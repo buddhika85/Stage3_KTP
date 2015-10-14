@@ -36,7 +36,7 @@ namespace BCMY.WebAPI.Controllers
             IEnumerable<TblExchangeRate> ers = null;
             try
             {
-                ers = exchangeRateRepository.GetAll();
+                ers = exchangeRateRepository.GetAll().OrderByDescending(e => e.dateER);
             }
             catch (Exception)
             {

@@ -8,7 +8,7 @@
     {        
         var vm = this;        
         vm = defineModel(vm, $http);
-        prepareInitialUI();
+        prepareInitialUI(vm);
         wireCommands(vm);
     };
 
@@ -25,7 +25,7 @@
     }
 
     // used to initialise the UI at the intial view load
-    function prepareInitialUI()
+    function prepareInitialUI(vm)
     {
         // set up the date picker
         $("#datePicker").datepicker({
@@ -43,6 +43,8 @@
                 $("#toDatePicker").datepicker("option", "minDate", selectedDate);
             }
         });
+
+        drawExchangeRatesGrid(vm);
     }
 
     // binding commands to buttons
@@ -74,6 +76,7 @@
                     vm.dateInput = '';
                     vm.euroInput = '';
                     vm.usdInput = '';
+                    drawExchangeRatesGrid(vm);                              // redraw ER grid
                 }
                 vm.errorMsg = data;
             }
@@ -128,6 +131,34 @@
                 vm.errorMsg = "Error - Invalid Usd input";
             }
         }
+    }
+
+    // used to draw exchange rate table for display purposes
+    function drawExchangeRatesGrid(vm)
+    {
+        vm.httpService({
+            method: "get",
+            headers: { 'Content-Type': 'application/json' },
+            url: ('http://localhost:61945/api/exchangerate'),
+        }).success(function (data) {            
+            $('#ersGrid').dataTable({
+                "data": data,
+                "aoColumns": [
+                        { "mData": "dateER", "sTitle": "Date" },
+                        { "mData": "euroValue", "sTitle": "Euro" },
+                        { "mData": "usdValue", "sTitle": "Usd" },
+                        { "mData": "timeER", "sTitle": "Time" },
+                        { "mData": "manualInput", "sTitle": "manually?" },
+                ],
+                "bDestroy": true,
+                "aLengthMenu": [[10, 25, 100, -1], [10, 25, 100, "All"]],
+                "iDisplayLength": 10
+            });
+        }
+        ).error(function (data) {
+            // display error message
+            alert('error - web service access')
+        });
     }
 
 }());
