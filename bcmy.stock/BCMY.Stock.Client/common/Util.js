@@ -187,5 +187,26 @@
         return currencyHtmlEntVal;
     }
 
+    // returns month name when month number is passed - 0 based
+    // 0 - January
+    // 11 - December
+    function getMonthName(monthNumber)
+    {
+        var monthNames = ["January", "February", "March", "April", "May", "June",
+                            "July", "August", "September", "October", "November", "December"];
+        return monthNames[monthNumber];
+    }
+
+    // get date obj in dd/mm/yyyy format
+    function GetDateStr(date) {
+        date = new Date(date);
+        return date.getDate() + ' ' + getMonthName(date.getMonth()) + ' ' + date.getFullYear();         // JS date objects months are zero based
+    }
   
+    // HH:MM:SS from time span returned
+    // 13:57:02.9900000 --> 13:57:02
+    function GetTimeStrFromTimeSpan(timeSpan)
+    {
+        return timeSpan.substring(0,8);
+    }
 //}());

@@ -144,11 +144,48 @@
             $('#ersGrid').dataTable({
                 "data": data,
                 "aoColumns": [
-                        { "mData": "dateER", "sTitle": "Date" },
-                        { "mData": "euroValue", "sTitle": "Euro" },
-                        { "mData": "usdValue", "sTitle": "Usd" },
-                        { "mData": "timeER", "sTitle": "Time" },
-                        { "mData": "manualInput", "sTitle": "manually?" },
+                        { "mData": "dateER", "sTitle": "Date", "sClass": "right", "mRender": function (data, type, row) {
+                                if (data != null) {
+                                    return GetDateStr(data);
+                                }
+                            },
+                            "aTargets": [0]
+                        },
+                        { "mData": "euroValue", "sTitle": "Euro", "sClass": "right", "mRender": function (data, type, row) {
+                                if (data != null) {
+                                    return RoundUpTo(data, 2);
+                                }
+                            },
+                            "aTargets": [0]
+                        },
+                        {
+                            "mData": "usdValue", "sTitle": "Usd", "sClass": "right", "mRender": function (data, type, row) {
+                                if (data != null) {
+                                    return RoundUpTo(data, 2);
+                                }
+                            },
+                            "aTargets": [0]
+                        },
+                        {
+                            "mData": "timeER", "sTitle": "Time", "bVisible": false , "sClass": "right", "mRender": function (data, type, row) {
+                                if (data != null) {
+                                    return GetTimeStrFromTimeSpan(data);
+                                }
+                            },
+                            "aTargets": [0]
+                        },
+                        {
+                            "mData": "manualInput", "sTitle": "Added manually?", "sClass": "right", "mRender": function (data, type, row) {
+                                if (data == null) {
+                                    return 'no';
+                                }
+                                else if (data == 'yes') {                                    
+                                    return 'yes';
+                                }
+                                //alert(data);
+                            },
+                            "aTargets": [0]
+                        },
                 ],
                 "bDestroy": true,
                 "aLengthMenu": [[10, 25, 100, -1], [10, 25, 100, "All"]],
@@ -160,5 +197,7 @@
             alert('error - web service access')
         });
     }
+
+    
 
 }());
