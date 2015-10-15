@@ -48,7 +48,7 @@
     }
 
     // binding commands to buttons
-    function wireCommands(vm, $http)
+    function wireCommands(vm)
     {
         vm.saveExchangeRates = function (vm) {
             saveExchangeRates(vm);

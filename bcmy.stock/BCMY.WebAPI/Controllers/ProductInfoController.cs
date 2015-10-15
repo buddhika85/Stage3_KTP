@@ -24,10 +24,12 @@ namespace BCMY.WebAPI.Controllers
     {
         ObjectProvider objectProvider = null;
         UnitOfWorkBcmyExternalDatabase unitOfWorkExt = null;
+        UnitOfWork unitOfWork = null;
         GenericRepository<vProductInfo> productInfoViewRepository = null;
         GenericRepository<productCondition> productConditionRepository = null;
         GenericRepository<productbrand> productBrandRepository = null;
         GenericRepository<ProductCategory> productCategoryRepository = null;
+        GenericRepository<TblProductStock> productStockRepository = null;
         
 
         // constructor
@@ -35,11 +37,13 @@ namespace BCMY.WebAPI.Controllers
         {
             objectProvider = objectProvider == null ? new ObjectProvider() : objectProvider;
             unitOfWorkExt = unitOfWorkExt == null ? objectProvider.UnitOfWorkBcmyExternal : unitOfWorkExt;
+            unitOfWork = unitOfWork == null ? objectProvider.UnitOfWork : unitOfWork;
 
             productInfoViewRepository = productInfoViewRepository == null ? unitOfWorkExt.ProductInfoViewRepository : productInfoViewRepository;
             productConditionRepository = productConditionRepository == null ? unitOfWorkExt.ProductConditionRepository : productConditionRepository;
             productBrandRepository = productBrandRepository == null ? unitOfWorkExt.ProductBrandRepository : productBrandRepository;
             productCategoryRepository = productCategoryRepository == null ? unitOfWorkExt.ProductCategoryRepository : productCategoryRepository;
+            productStockRepository = productStockRepository == null ? unitOfWork.ProductStockRepository : productStockRepository;
         }
 
         // GET: api/ProductInfo
@@ -239,5 +243,23 @@ namespace BCMY.WebAPI.Controllers
             }
         }
 
+        // Returns all the products with stock counts and amended info
+        [HttpGet, ActionName("GetProductStockInfo")]
+        public IEnumerable<ProductInfoViewModel> GetProductStockInfo(bool withAmendData)
+        {
+            try
+            {
+                // call stored procedure via repository
+                var result = productStockRepository.SQLQuery<ProductInfoViewModel>("SP_GetProductsWithStockInfo");
+
+                // convert the result to a view model object
+                IEnumerable<ProductInfoViewModel> productInfoVms = result;
+                return productInfoVms;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }
