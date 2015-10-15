@@ -65,6 +65,13 @@
                             templateUrl: "app/order/pastData/pastSalesOrder/AddPastSalesOrders.html",
                             controller: "AddPastSalesOrdersCtrl as vm"
                         })
+
+                        // Amend stock quantities
+                        .state("amendStock", {
+                            url: "/product/amendStock",
+                            templateUrl: "app/product/AmendStock.html",
+                            controller: "AmendStockCtrl as vm"
+                        })
                     }
                 ]
     );

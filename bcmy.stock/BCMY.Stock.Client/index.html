@@ -66,7 +66,13 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li><a ui-sref="dashboard">Dashboard</a></li>
-                    <li><a href="#">User management</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Administration <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a ui-sref="amendStock">Amend Stock</a></li>
+                            <li><a href="#">User management</a></li>
+                        </ul>
+                    </li>                    
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Customer/Supplier <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
@@ -91,8 +97,9 @@
                             <li><a ui-sref="addPastExchangeRates">Add past exchange rates</a></li>
                             <li><a ui-sref="addPastSalesOrders">Add past sales order</a></li>
                         </ul>
-                    </li>
+                    </li>                    
                 </ul>
+                
 
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
@@ -161,6 +168,7 @@
     <script src="app/order/salesOrder/addEditSalesOrderCtrl.js"></script>
     <script src="app/order/salesOrder/searchSalesOrdersCtrl.js"></script>
     <script src="app/order/salesOrder/editSalesOrderCtrl.js"></script>
+    <script src="app/product/amendStockCtrl.js"></script>
     
     <script src="app/order/pastData/pastExchangeRates/addPastExchangeRates.js"></script>    <!--past data controllers-->
     <script src="app/order/pastData/pastSalesOrder/addPastSalesOrders.js"></script>         <!--past data controllers-->
