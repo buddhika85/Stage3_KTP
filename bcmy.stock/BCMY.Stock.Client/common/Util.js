@@ -209,4 +209,22 @@
     {
         return timeSpan.substring(0,8);
     }
+
+
+    // used to display error messages 
+    function DisplayErrorMessage(errorMessage, element) {
+        element.addClass("errorLabel");
+        element.text(errorMessage);
+    }
+
+
+    // used to apply red outline border for the validation errors of fields
+    function ApplyErrorBorder(element) {
+        element.addClass("errorBorder");
+    }
+
+    // used to remove error indicating outline borders
+    function RemoveOutlineBorders(element) {
+        element.removeClass("errorBorder");
+    }
 //}());

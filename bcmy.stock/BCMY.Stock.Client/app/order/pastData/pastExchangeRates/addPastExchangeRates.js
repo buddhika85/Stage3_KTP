@@ -1,15 +1,17 @@
 ﻿(function () {
     "use strict";
     var module = angular.module("stockManagement");         // get module
-    module.controller("AddPastExchangeRatesCtrl", ["$http", addPastExchangeRatesCtrl]);    // attach controller to the module
+    module.controller("AddPastExchangeRatesCtrl", ["$http", "blockUI", addPastExchangeRatesCtrl]);    // attach controller to the module
 
     // controller function
-    function addPastExchangeRatesCtrl($http)                   
-    {        
+    function addPastExchangeRatesCtrl($http, blockUI)                   
+    {
+        blockUI.start();
         var vm = this;        
         vm = defineModel(vm, $http);
         prepareInitialUI(vm);
         wireCommands(vm);
+        blockUI.stop();
     };
 
     // used to define and assign initial values to the model properties
