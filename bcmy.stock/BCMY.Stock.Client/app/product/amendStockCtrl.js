@@ -20,7 +20,14 @@
         vm.httpService = httpService;                 // http service
         vm.blockUI = blockUI;
         vm.productId = "";
-        vm.stockCount = 0;
+        vm.categoryName = "";
+        vm.conditionName = "";
+        vm.brandName = "";
+        vm.modelName = "";
+        vm.counted = "";
+        vm.stockCount = "";
+        
+        vm.productListId = null;
         return vm;
     }
 
@@ -29,6 +36,7 @@
     {
         vm.blockUI.start();
         RemoveOutlineBorders($('#selectCategory'));
+        $('#countedSpan').html('');
         drawProductsGrid(vm);
         populateCategoryDropDown(vm);
         vm.blockUI.stop();
@@ -73,12 +81,139 @@
         });
 
         vm.amendStock = function () {
-            alert("amend stock");
+            if (validateSelections()) {
+                DisplayErrorMessage('', $('#lblErrorMessage'));
+                amendStockCount(vm, null);
+            };
         };
 
         vm.resetSearch = function () {
-            alert("reset stock");
+            ResetSearchDDLs();
         };
+
+        vm.saveStockAmendment = function () {
+            if (vm.stockCount != null && vm.stockCount.trim() != '') {
+                saveStockAmendment(vm);
+            }
+            else {
+                ApplyErrorBorder($('#stockCount'));
+                DisplayErrorMessage('Error : You should provide a stock count', $('#lblErrorMessagePopup')); 
+            }            
+        }
+    }
+
+    // used to save stock amendments
+    function saveStockAmendment(vm)
+    {
+        //alert('save amended stock : ' + vm.productListId + ' ' + vm.stockCount);
+        var serverUrl = 'http://localhost:61945/api/ProductInfo?productId=' + vm.productListId + '&quantity=' + vm.stockCount;
+        vm.httpService({
+            method: "get",
+            headers: { 'Content-Type': 'application/json' },
+            url: serverUrl,
+        }).success(function (data) {
+            if (data == true) {                
+                //drawProductsGrid(vm); // refersh grid
+                vm.counted = '<span style="background-color:green; text-align:center; padding-left:2%; padding-right: 2%">  Yes  </span>'; // update popup and show
+                DisplayErrorMessage('Stock count update successful', $('#lblErrorMessagePopup'));
+            }
+            else {
+                DisplayErrorMessage('Error - Stock count update failed - contact IT support', $('#lblErrorMessagePopup'));
+            }                
+        }
+        ).error(function (data) {
+            // display error message
+            DisplayErrorMessage('Error - Stock count update failed - contact IT support', $('#lblErrorMessagePopup'));
+        });
+    }
+
+    // used to validate product info selections
+    function validateSelections()
+    {
+        var isValid = false;
+                        
+        isValid = validateDDLsOnProductSearch($('#selectCategory'), 'product category');
+        isValid = isValid == true ? validateDDLsOnProductSearch($('#selectCondition'), 'product condition') : isValid;
+        isValid = isValid == true ? validateDDLsOnProductSearch($('#selectBrand'), 'brand') : isValid;
+        isValid = isValid == true ? validateDDLsOnProductSearch($('#selectModel'), 'model') : isValid;
+        
+        return isValid;
+    }
+
+    // a helper to validate DDLs and display error messages
+    function validateDDLsOnProductSearch(ddl, ddlName)
+    {
+        var isValid = false;
+        if (isValidDropDownListSelection(ddl)) {
+            RemoveOutlineBorders(ddl);
+            isValid = true;
+        }
+        else {
+            isValid = false;
+            DisplayErrorMessage(('Error : You should select a ' + ddlName), $('#lblErrorMessage'));
+            ApplyErrorBorder(ddl);
+        }
+        return isValid;
+    }
+
+    // used to amend the stock counts
+    function amendStockCount(vm, productlistId)
+    {       
+        var modelId = null;
+        // seperate grid click or DDL selection
+        if (productlistId == null) {
+            modelId = $('#selectModel').val(); // not a grid click, its a DDL selection
+        }
+        else {
+            modelId = productlistId;
+        }
+            
+        var searchResult = null;
+        var serverUrl = 'http://localhost:61945/api/ProductInfo?productlistId=' + modelId;
+        vm.httpService({
+            method: "get",
+            headers: { 'Content-Type': 'application/json' },
+            url: serverUrl
+        }).success(function (data) {
+            
+            searchResult = data;
+            //alert("searched : " + searchResult.model);
+            vm.productListId = data.productlistId;
+            vm.categoryName = data.productCatergoryName;
+            vm.conditionName = data.conditionName;
+            vm.brandName = data.productbrandname;
+            vm.modelName = data.model;
+            vm.counted = data.stockAmended == 'yes' ? '<span style="background-color:green; text-align:center; padding-left:2%; padding-right: 2%">  Yes  </span>' : 
+                '<span style="background-color:darkorange; text-align:center; padding-left:2%; padding-right: 2%">  No  </span>';
+            //vm.counted = $sce.trustAsHtml(vm.counted);
+            $('#countedSpan').html(vm.counted);
+            vm.stockCount = data.stockCount;
+            RemoveOutlineBorders($('#stockCount'));
+            DisplayErrorMessage('', $('#lblErrorMessagePopup'));
+
+            $('#myModal').modal({
+                show: true,
+                keyboard: true,
+                backdrop: true
+            });
+        }
+        ).error(function (data) {
+            // display error message
+            alert('error - web service access - product search - please contact IT helpdesk');
+            DisplayErrorMessage('error - web service access - product search - please contact IT helpdesk', $('#lblErrorMessage'))
+        });
+    }
+
+    //used to get json object consisting of search paramters 
+    function getSearchParamsJsonObject(categoryId, conditionId, brandIds, modelIds) {
+        var searchParamsJson = {
+            "categoryId": categoryId,
+            "conditionId": conditionId,
+            "brandIds": brandIds,
+            "modelIds": modelIds
+        };
+
+        return searchParamsJson;
     }
 
     // used to draw products grid with the stock count
@@ -128,7 +263,8 @@
             // on info button clicks
             $('#productsGrid tbody').on('click', 'button.productInfo', function () {
                 var data = table.row($(this).parents('tr')).data();
-                alert("View Info : " + data.productlistId + " - " + data.model);                
+                //alert("View Info : " + data.productlistId + " - " + data.model);     
+                amendStockCount(vm, data.productlistId);
             });
         }
         ).error(function (data) {

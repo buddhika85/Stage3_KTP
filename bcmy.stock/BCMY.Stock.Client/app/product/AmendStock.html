@@ -15,9 +15,9 @@
                     <div class="form-group row">
                         <p class="col-md-12">
                             <kbd>IMPORTANT:</kbd>&nbsp;&nbsp;
-                            First select the product <code>category</code>,
+                            To amend stock counts - first select the product <code>category</code>,
                             then based on that the <code>condition</code>, then the <code>brand</code>
-                            and finally the <code>model</code>
+                            and finally the <code>model</code>. All are mandatory selections.
                         </p>
                     </div>
 
@@ -49,7 +49,7 @@
                         <!--brand selection-->
                         <label for="selectBrand" class="control-label col-md-1 fontWeightNormal">Brand</label>
                         <div class="col-md-4">
-                            <select id="selectBrand" multiple>
+                            <select id="selectBrand">
                                 <option>---- Select Brand ----</option>
                             </select>
                         </div>
@@ -57,7 +57,7 @@
                         <!--model selection-->
                         <label for="selectModel" class="control-label col-md-1 fontWeightNormal">Model</label>
                         <div class="col-md-4">
-                            <select id="selectModel" multiple>
+                            <select id="selectModel">
                                 <option>---- Select Model ----</option>
                             </select>
                         </div>
@@ -120,5 +120,70 @@
     </div>
 
 
+    <!-- Modal to insert/edit/view info-->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="modalTitle">Amend Stock count : {{vm.productListId}}</h4>
+                </div>
+
+                <div class="modal-body">                       
+                                                
+                    <div class="row formRawPaddingCustom">
+                        <label for="category" class="control-label col-md-2 fontWeightNormal">Category</label>
+                        <div class="col-md-4">
+                            <input type="text" id="category" disabled value="{{vm.categoryName}}" />
+                        </div>
+                        <label for="condition" class="control-label col-md-2 fontWeightNormal">Condition</label>
+                        <div class="col-md-4">
+                            <input type="text" id="condition" disabled value="{{vm.conditionName}}" />
+                        </div>
+                    </div>
+
+                    <div class="row formRawPaddingCustom">
+                        <label for="brand" class="control-label col-md-2 fontWeightNormal">Brand</label>
+                        <div class="col-md-4">
+                            <input type="text" id="brand" disabled value="{{vm.brandName}}" />
+                        </div>
+                        <label for="modelName" class="control-label col-md-2 fontWeightNormal">Model</label>
+                        <div class="col-md-4">
+                            <input type="text" id="modelName" disabled value="{{vm.modelName}}" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label for="countedSpan" class="control-label col-md-2 fontWeightNormal">Counted</label>
+                        <div class="col-md-4">
+                            <!--<span id="counted" ng-bind-html="{{vm.counted}}"></span>-->
+                            <span id="countedSpan"></span>
+                        </div>
+                        <label for="stockCount" class="control-label col-md-2 fontWeightNormal">Stock count</label>
+                        <div class="col-md-4">
+                            <input type="text" id="stockCount" ng-model="vm.stockCount" onkeypress="return isNumberKey(event)" maxlength="8" />
+                        </div>
+                    </div>
+
+                    <!-- error message section -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="control-label fontWeightNormal" style="color:red" id="lblErrorMessagePopup"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="btnSave" type="button" class="btn-sm btn-primary" ng-click='vm.saveStockAmendment()'>Save</button>
+                    <button id="btnCancel" type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--End modal popup-->
 
 </div>

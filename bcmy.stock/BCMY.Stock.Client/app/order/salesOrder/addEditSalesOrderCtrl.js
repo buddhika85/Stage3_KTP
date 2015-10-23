@@ -1273,7 +1273,7 @@
         }
         else
         {
-            DisplayErrorMessage('Error : Your should atleast select a category perform a product search', $('#lblErrorMessage'));
+            DisplayErrorMessage('Error : You should atleast select a category perform a product search', $('#lblErrorMessage'));
             ApplyErrorBorder(categoryDdl);
         }        
     }

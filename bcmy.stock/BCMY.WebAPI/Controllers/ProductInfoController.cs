@@ -256,10 +256,33 @@ namespace BCMY.WebAPI.Controllers
                 IEnumerable<ProductInfoViewModel> productInfoVms = result;
                 return productInfoVms;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
         }
+
+        // updates stock count and returns status
+        [HttpGet, ActionName("UpdateStockCount")]
+        public bool UpdateStockCount(int productId, int quantity)
+        {
+            bool status = false;
+            try
+            {
+                var result = productStockRepository.SQLQuery<string>("SP_UpdateStockCount @productId, @quantity, @stockCountAmended",
+                   new SqlParameter("productId", SqlDbType.Int) { Value = productId },
+                   new SqlParameter("quantity", SqlDbType.Int) { Value = quantity },
+                   new SqlParameter("stockCountAmended", SqlDbType.VarChar) { Value = "yes" });
+                // convert the result to a view model object
+                string msg = result.FirstOrDefault<string>();
+                status = msg == "success" ? true : false;                
+            }
+            catch (Exception)
+            {
+                status = false; ;
+            }
+            return status;
+        }
+
     }
 }
