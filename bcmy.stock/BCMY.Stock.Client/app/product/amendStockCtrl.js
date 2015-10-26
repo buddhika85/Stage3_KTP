@@ -26,6 +26,7 @@
         vm.modelName = "";
         vm.counted = "";
         vm.stockCount = "";
+        vm.tableRecords = null;
         
         vm.productListId = null;
         return vm;
@@ -112,9 +113,12 @@
             headers: { 'Content-Type': 'application/json' },
             url: serverUrl,
         }).success(function (data) {
+            //debugger
             if (data == true) {                
                 //drawProductsGrid(vm); // refersh grid
+                updateRecordInGrid(vm);
                 vm.counted = '<span style="background-color:green; text-align:center; padding-left:2%; padding-right: 2%">  Yes  </span>'; // update popup and show
+                $('#countedSpan').html(vm.counted);
                 DisplayErrorMessage('Stock count update successful', $('#lblErrorMessagePopup'));
             }
             else {
@@ -125,6 +129,26 @@
             // display error message
             DisplayErrorMessage('Error - Stock count update failed - contact IT support', $('#lblErrorMessagePopup'));
         });
+    }
+
+    // used to update a single record in grid
+    function updateRecordInGrid(vm)
+    {
+        
+        for (var i = 0; i <= vm.tableRecords.length; i++) {            
+            if (vm.tableRecords[i] != null)
+            {
+                if (vm.tableRecords[i].productlistId != null && vm.tableRecords[i].productlistId == vm.productListId) {
+                    //alert("update " + vm.productListId + " to " + vm.stockCount);
+                    vm.tableRecords[i].stockCount = vm.stockCount;
+                    vm.tableRecords[i].stockAmended = 'yes';
+                    break;
+                }
+            }           
+        }
+        DestroyTable(); // destroy
+        drawHelper(vm); // recreate the table
+       
     }
 
     // used to validate product info selections
@@ -183,6 +207,7 @@
             vm.conditionName = data.conditionName;
             vm.brandName = data.productbrandname;
             vm.modelName = data.model;
+            //debugger
             vm.counted = data.stockAmended == 'yes' ? '<span style="background-color:green; text-align:center; padding-left:2%; padding-right: 2%">  Yes  </span>' : 
                 '<span style="background-color:darkorange; text-align:center; padding-left:2%; padding-right: 2%">  No  </span>';
             //vm.counted = $sce.trustAsHtml(vm.counted);
@@ -223,49 +248,10 @@
             method: "get",
             headers: { 'Content-Type': 'application/json' },
             url: ('http://localhost:61945/api/productinfo?withAmendData=true'),
-        }).success(function (data) {
-            
-            $('#productsGrid').dataTable({
-                "data": data,
-                "aoColumns": [
-                        { "mData": "productlistId", "sTitle": "Product list Id", "bVisible": false },
-                        { "mData": "productcategory", "sTitle": "Category ID", "bVisible": false },
-                        { "mData": "productCatergoryName", "sTitle": "Category" },
-                        { "mData": "productcondition", "sTitle": "Condition ID", "bVisible": false },
-                        { "mData": "conditionName", "sTitle": "Condition" },
-                        { "mData": "productbrandid", "sTitle": "Brand ID", "bVisible": false },
-                        { "mData": "productbrandname", "sTitle": "Brand" },
-                        { "mData": "model", "sTitle": "Model" },
-                        { "mData": "marketvalueGBP", "sTitle": "Market value &#163", "bVisible": false },
-                        { "mData": "stockCount", "sTitle": "Stock count" },
-                        {
-                            "mData": "sotckAmended", "sTitle": "Counted?", "sClass": "right", "mRender": function (data, type, row) {
-                                if (data == 'no') {
-                                    return '<div style="background-color:darkorange; text-align:center">No</div> ';
-                                }
-                                else {
-                                    return '<div style="background-color:green; text-align:center">Yes</div> ';
-                                }
-                            },
-                            "aTargets": [0]
-                        },
-                        { "sTitle": "Amend count", "defaultContent": "<button class='productInfo'>Amend</button>" }
-                ],
-                "bDestroy": true,
-                //"aLengthMenu": [[15, 50, 100, 200, -1], [15, 50, 100, 200, "All"]],
-                "aLengthMenu": [[15, 50, 100, 200, 500, 700, 1000, -1], [15, 50, 100, 200, 500, 700, 1000, "All"]],
-                "iDisplayLength": 15
-            });
-
-            // data table
-            var table = $('#productsGrid').DataTable();
-
-            // on info button clicks
-            $('#productsGrid tbody').on('click', 'button.productInfo', function () {
-                var data = table.row($(this).parents('tr')).data();
-                //alert("View Info : " + data.productlistId + " - " + data.model);     
-                amendStockCount(vm, data.productlistId);
-            });
+        }).success(function (data) {            
+            vm.tableRecords = data;
+            //debugger
+            drawHelper(vm);
         }
         ).error(function (data) {
             // display error message
@@ -273,6 +259,50 @@
         });
     }
 
+    // a helper method to draw the grid
+    function drawHelper(vm) {
+        $('#productsGrid').dataTable({
+            "data": vm.tableRecords,
+            "aoColumns": [
+                    { "mData": "productlistId", "sTitle": "Product list Id", "bVisible": true },
+                    { "mData": "productcategory", "sTitle": "Category ID", "bVisible": false },
+                    { "mData": "productCatergoryName", "sTitle": "Category" },
+                    { "mData": "productcondition", "sTitle": "Condition ID", "bVisible": false },
+                    { "mData": "conditionName", "sTitle": "Condition" },
+                    { "mData": "productbrandid", "sTitle": "Brand ID", "bVisible": false },
+                    { "mData": "productbrandname", "sTitle": "Brand" },
+                    { "mData": "model", "sTitle": "Model" },
+                    { "mData": "marketvalueGBP", "sTitle": "Market value &#163", "bVisible": false },
+                    { "mData": "stockCount", "sTitle": "Stock count" },
+                    {
+                        "mData": "stockAmended", "sTitle": "Counted?", "sClass": "right", "mRender": function (data, type, row) {
+                            if (data == null || data == 'no') {
+                                return '<div style="background-color:darkorange; text-align:center">No</div> ';
+                            }
+                            else {
+                                return '<div style="background-color:green; text-align:center">Yes</div> ';
+                            }
+                        },
+                        "aTargets": [0]
+                    },
+                    { "sTitle": "Amend count", "defaultContent": "<button class='productInfo'>Amend</button>" }
+            ],
+            "bDestroy": true,
+            //"aLengthMenu": [[15, 50, 100, 200, -1], [15, 50, 100, 200, "All"]],
+            "aLengthMenu": [[15, 50, 100, 200, 500, 700, 1000, -1], [15, 50, 100, 200, 500, 700, 1000, "All"]],
+            "iDisplayLength": 15
+        });
+
+        // data table
+        var table = $('#productsGrid').DataTable();
+
+        // on info button clicks
+        $('#productsGrid tbody').on('click', 'button.productInfo', function () {
+            var data = table.row($(this).parents('tr')).data();
+            //alert("View Info : " + data.productlistId + " - " + data.model);     
+            amendStockCount(vm, data.productlistId);
+        });
+    }
 
     // Destroy the product data grid
     function DestroyTable() {
