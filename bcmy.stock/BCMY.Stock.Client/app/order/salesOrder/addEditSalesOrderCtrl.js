@@ -163,7 +163,7 @@
     // performing the batch confirm of all the orderlines in an order
     function performBacthOrderlineConfirm($http, vm) {
         $('#modalBatchConfirm').modal('hide');      // hide alert
-        debugger
+        //debugger
         // pick orderId from hidden field
         var orderId = $('#orderId').val();
         //alert("perform the bacth confirm : " + orderId);
@@ -208,7 +208,7 @@
         if ($('#orderGrid tr:eq(1) > td:eq(0)').text() != 'No data available in table') //if ($('#orderGrid tr').length > 2)
         {
             // check for orderline statuses - if all confimed - pass to server side
-            debugger;
+            //debugger;
             var allConfimed = ValidateForOrderLineStatus();
             if (!allConfimed) {
                 //DisplayErrorMessage('Warning - make sure that all the orderlines are confirmed before confirming the particular order', $('#lblErrorOrderLineMessage'));
@@ -897,6 +897,7 @@
     // display successful negotiations table
     function DrawSuccessNegotiationsGrid(successNegos, compnayName)
     {
+        //debugger;
         var htmlTable = "<table class='table table-condensed table-striped table-bordered'><tr><th>Company</th><th>Contact</th><th>Date</th><th>Time</th><th>Qty</th><th>PPI (" +
             getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th><th>Total (" +
             getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th></tr>";
@@ -1009,10 +1010,11 @@
 
     // Used to draw the negotiation grid
     function DrawNegotiationsGrid(negotiations)
-    {        
+    {
+        //debugger;
         var htmlTable = "<table class='table table-condensed table-bordered'><tr><th>Date</th><th>Time</th><th>Qty</th><th>PPI (" +
-            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()); + ")</th><th>Total (" +
-            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()); + ")</th><th>Status</th></tr>";
+            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th><th>Total (" +
+            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th><th>Status</th></tr>";
         if (negotiations != null && negotiations.length > 0) {
             
             $.each(negotiations, function (index, item) {

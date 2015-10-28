@@ -1024,8 +1024,8 @@
     // Used to draw the negotiation grid
     function DrawNegotiationsGrid(negotiations) {
         var htmlTable = "<table class='table table-condensed table-bordered'><tr><th>Date</th><th>Time</th><th>Qty</th><th>PPI (" +
-            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()); + ")</th><th>Total (" +
-            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()); + ")</th><th>Status</th></tr>";
+            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th><th>Total (" +
+            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th><th>Status</th></tr>";
         if (negotiations != null && negotiations.length > 0) {
 
             $.each(negotiations, function (index, item) {
