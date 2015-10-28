@@ -1242,12 +1242,14 @@
         if (currentAllocation != '-' && $('#orderNegotiationsGridDiv tr:eq(1) td:eq(5)').text() != 'rejected') {
             stockCount = stockCount + parseInt(currentAllocation, 10);
         }
-        if (quantity > stockCount) {
-            //ApplyErrorBorder($('#statusSelect'));                                                                                       // indicate error
-            ApplyErrorBorder(quantityEle);
-            DisplayErrorMessage("Warning - Stock count is not sufficient to fulfill the quantity requirement", $('#lblErrorManageNegotiation'));     // update error message
-            isValid = false;
-        }
+        /* stock count sufficient validation - not necessary for past orderlines */
+        //if (quantity > stockCount) {
+        //    //ApplyErrorBorder($('#statusSelect'));                                                                                       // indicate error
+        //    ApplyErrorBorder(quantityEle);
+        //    DisplayErrorMessage("Warning - Stock count is not sufficient to fulfill the quantity requirement", $('#lblErrorManageNegotiation'));     // update error message
+        //    isValid = false;
+        //}
+
         //}
 
         return isValid;
