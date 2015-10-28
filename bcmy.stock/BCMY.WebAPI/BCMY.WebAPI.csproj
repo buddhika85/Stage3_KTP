@@ -225,6 +225,7 @@
     <Compile Include="Controllers\NegotiationController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\OrderLineController.cs" />
+    <Compile Include="Controllers\PastSalesOrderController.cs" />
     <Compile Include="Controllers\SalesOrderController.cs" />
     <Compile Include="Controllers\ProductInfoController.cs" />
     <Compile Include="Controllers\StatusController.cs" />

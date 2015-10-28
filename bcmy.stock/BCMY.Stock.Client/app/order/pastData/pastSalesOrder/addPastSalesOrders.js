@@ -49,10 +49,10 @@
         // on create order button click
         vm.createOrder = function () {
             var isValid = ValidateCustContactSelections();
-            isValid = ValidatePastDateSelection();
+            isValid = isValid ? ValidatePastDateSelection() : isValid;
             //alert("validate customer and compnay selection then create a new order record in the database : " + isValid);
             if (isValid) {
-                CreateAnOrder($http);
+                createPastSalesOrder($http);
             }
         }
 
@@ -295,39 +295,40 @@
 
 
     // create order record
-    function CreateAnOrder($http) {
-
+    function createPastSalesOrder($http) {
+        debugger;
         // create the order
         var companyId = $('#selectCustSupp').val();
         var contactFulName = $("#selectContact").val();
         var vat = $('#selectVAT').val();
-        var currency = $('#selectCurrency').val();
+        var currency = $('#selectCurrency').val();        
+        var pastDate = $('#orderDatePicker').val();
+
         $http({
             method: "get",
             headers: { 'Content-Type': 'application/json' },
-            url: ('http://localhost:61945/api/SalesOrder?companyId=' + companyId + '&contactFulName=' + contactFulName +
-                '&vat=' + vat + '&currency=' + currency)
+            url: ('http://localhost:61945/api/PastSalesOrder?companyId=' + companyId + '&contactFulName=' + contactFulName +
+                '&vat=' + vat + '&currency=' + currency + '&orderDate=' + pastDate)
         })
         .success(function (data) {
-            if (data != -999) {
+            debugger;
+            if (! isNaN(data)) {
                 // store the returned order Id in the hidden field
-                $('#orderId').val(data);
+                $('#orderId').val(parseInt(data));
                 $('#lblErrorMessageCrtOrdr').removeClass("errorLabel");
                 $('#lblErrorMessageCrtOrdr').addClass("successLabel");
-                $('#lblErrorMessageCrtOrdr').text("Order creation successful, Please do a product search and add the order lines");
-
-                // display the orderlines grid
-
+                $('#lblErrorMessageCrtOrdr').text("Past order creation successful, Please do a product search and add the order lines");
+                                
                 // disable buyer/seller selections, enable product search form
                 EnableDisableBuyerSellerFeilds(true);
                 EnableDisableProductSearchForm(false);
             }
             else {
-                DisplayErrorMessage('Error - Order creation Unsuccessful', $('#lblErrorMessageCrtOrdr'));
+                DisplayErrorMessage(data, $('#lblErrorMessageCrtOrdr'));
             }
         }).error(function (data) {
             // display error message
-            DisplayErrorMessage('Error - Order creation Unsuccessful', $('#lblErrorMessageCrtOrdr'));
+            DisplayErrorMessage('Error - Past order creation Unsuccessful', $('#lblErrorMessageCrtOrdr'));
         });
     }
 
@@ -337,6 +338,7 @@
         $('#selectContact').attr("disabled", isDisabled);
         $('#selectVAT').attr("disabled", isDisabled);
         $('#selectCurrency').attr("disabled", isDisabled);
+        $('#orderDatePicker').attr("disabled", isDisabled);
 
         $('#addContactBtn').attr("disabled", isDisabled);
         $('#createOrdrBtn').attr("disabled", isDisabled);
@@ -365,6 +367,8 @@
     function ValidateCustContactSelections() {
 
         var isValid = false;
+        RemoveOutlineBorders($("#orderDatePicker"));
+        DisplayErrorMessage('', $('#lblErrorMessageCrtOrdr'));
         var customerDdl = $("#selectCustSupp");
 
         if (isValidDropDownListSelection(customerDdl)) {
@@ -648,13 +652,13 @@
     function setUpDatePickers() {
                 
         $("#orderDatePicker").datepicker({
-            defaultDate: new Date(2015, 9, 31),         // 2015 Aug 31
-            maxDate: new Date(2015, 9, 31),
+            defaultDate: new Date(new Date() - 24*60*60*1000),  // yesterday
+            maxDate: new Date(new Date() - 24*60*60*1000),
             changeMonth: true,
             changeYear: true,
             numberOfMonths: 1,
 
-            dateFormat: "dd/mm/yy",
+            dateFormat: 'yy-mm-dd',//"dd/mm/yy",
             beforeShow: function () {
                 $(".ui-datepicker").css('font-size', 12)
             }
