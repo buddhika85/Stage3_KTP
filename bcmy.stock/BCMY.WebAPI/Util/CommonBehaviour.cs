@@ -116,5 +116,18 @@ namespace BCMY.WebAPI.Util
         //    return threeDArray;
         //}
 
+        /// <summary>
+        /// Fixes date and time null issue
+        /// </summary>
+        public static IList<OrderLineViewModel> FixDateTime(IList<OrderLineViewModel> orderLinesOfOrder)
+        {
+            foreach (OrderLineViewModel ol in orderLinesOfOrder)
+            {
+                ol.Date = ol.orderlineDateTime.Date.ToShortDateString();
+                ol.Time = ol.orderlineDateTime.ToString("hh:mm tt");
+            }
+            return orderLinesOfOrder;
+        }
+
     }
 }

@@ -1053,6 +1053,7 @@
 
     // used to insert an order line
     function InsertOrderLine($http, vm) {
+        debugger;
         var isValid = ValidateNegotiation();
         if (isValid) {
             // disable negotiation form fields
@@ -1065,14 +1066,16 @@
             var status = $('#statusSelect').val();
             var totalAmountVal = $('#totalIncome').text();
             var orderId = $('#orderId').val();
+            var pastDate = $('#orderDatePicker').val();
 
-            var serverUrl = 'http://localhost:61945/api/Orderline?productListId=' + productListId + '&quantityVal=' + quantityVal + '&pricePerItem=' + pricePerItem
-                + '&totalAmountVal=' + totalAmountVal + '&statusVal=' + status + '&orderIdVal=' + orderId;
+            var serverUrl = 'http://localhost:61945/api/PastSalesOrder?productListId=' + productListId + '&quantityVal=' + quantityVal + '&pricePerItem=' + pricePerItem
+                + '&totalAmountVal=' + totalAmountVal + '&statusVal=' + status + '&orderIdVal=' + orderId + '&orderDate=' + pastDate;
             $http({
                 method: "get",
                 headers: { 'Content-Type': 'application/json' },
                 url: serverUrl
             }).success(function (data) {
+                debugger;
                 if (data != null) {
                     //alert(data.length);
                     // Refresh orderlines grid
@@ -1081,7 +1084,7 @@
                     $('#modelNegotiation').modal('hide');
                 }
                 else {
-                    DisplayErrorMessage('error - saving data - record negotiation - please contact IT helpdesk', $('#lblErrorManageNegotiation'));
+                    DisplayErrorMessage('error - saving past orderline/negotiation - record negotiation - please contact IT helpdesk', $('#lblErrorManageNegotiation'));
                     //alert('error - saving data - record negotiation - please contact IT helpdesk');
                 }
             }

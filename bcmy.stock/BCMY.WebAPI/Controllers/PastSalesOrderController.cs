@@ -1,5 +1,7 @@
 ﻿using BCMY.WebAPI.Models.UnityDI;
+using BCMY.WebAPI.Util;
 using DataAccess_EF.EntityFramework;
+using DataAccess_EF.ViewModels;
 using GenericRepository_UnitOfWork.GR;
 using GenericRepository_UnitOfWork.UOW;
 using System;
@@ -20,6 +22,7 @@ namespace BCMY.WebAPI.Controllers
         ObjectProvider objectProvider = null;
         UnitOfWork unitOfWork = null;
         GenericRepository<TblOrder> orderRepository = null;
+        GenericRepository<TblOrderLine> orderLineRepository = null;
 
         // constructor
         public PastSalesOrderController()
@@ -27,6 +30,7 @@ namespace BCMY.WebAPI.Controllers
             objectProvider = objectProvider == null ? new ObjectProvider() : objectProvider;
             unitOfWork = unitOfWork == null ? objectProvider.UnitOfWork : unitOfWork;
             orderRepository = orderRepository == null ? unitOfWork.OrderRepository : orderRepository;
+            orderLineRepository = orderLineRepository == null ? unitOfWork.OrderLineRepository : orderLineRepository;
         }
 
         // http://localhost:61945/api/PastSalesOrder?companyid=1&contactfulname=kumar_sangakkara&vat=YES&currency=1&orderDate=
@@ -60,6 +64,46 @@ namespace BCMY.WebAPI.Controllers
             catch (Exception)
             {
                 return "Error - exception - Please contact IT support";
+            }
+        }
+
+
+        /// <summary>
+        /// Used to save a past negotiation/orderline
+        /// </summary>
+        /// http://localhost:61945/api/PastSalesOrder?productListId=107233&quantityVal=3&pricePerItem=5.0&totalAmountVal=15.0&statusVal=2&orderIdVal=47&=orderDate
+        [HttpGet, ActionName("SavePastOrderlineWithNegotiation")]
+        public IList<OrderLineViewModel> SavePastOrderlineWithNegotiation(int productListId, decimal quantityVal, decimal pricePerItem, decimal totalAmountVal, int statusVal, int orderIdVal, DateTime orderDate)
+        {
+            try
+            {
+                // validation 
+                if (OrderLineNegotiationValidator.ValidateOrderLineOrNegotiation(productListId, quantityVal, pricePerItem, totalAmountVal, statusVal, orderIdVal))
+                {
+                    string status = CommonBehaviour.GetCommonStatusString(statusVal);
+                    // call stored procedure via repository
+                    var result = orderLineRepository.SQLQuery<OrderLineViewModel>("SP_SavePastOrderLineWithNegotiation @productListId, @quantityVal, @pricePerItem, @totalAmountVal, @status, @orderIdVal, @orderDate",
+                        new SqlParameter("productListId", SqlDbType.Int) { Value = productListId },
+                        new SqlParameter("quantityVal", SqlDbType.Int) { Value = quantityVal },
+                        new SqlParameter("pricePerItem", SqlDbType.Decimal) { Value = pricePerItem },
+                        new SqlParameter("totalAmountVal", SqlDbType.Decimal) { Value = totalAmountVal },
+                        new SqlParameter("status", SqlDbType.Text) { Value = status },                       
+                        new SqlParameter("orderIdVal", SqlDbType.Int) { Value = orderIdVal },
+                        new SqlParameter("orderDate", SqlDbType.DateTime) { Value = orderDate });
+
+                    // convert the result orderlines (by order ID)
+                    IList<OrderLineViewModel> orderLinesOfOrder = result.ToList<OrderLineViewModel>();
+                    orderLinesOfOrder = CommonBehaviour.FixDateTime(orderLinesOfOrder);
+                    return orderLinesOfOrder;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
             }
         }
 

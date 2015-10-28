@@ -56,7 +56,7 @@ namespace BCMY.WebAPI.Controllers
 
                     // convert the result orderlines (by order ID)
                     IList<OrderLineViewModel> orderLinesOfOrder = result.ToList<OrderLineViewModel>();
-                    orderLinesOfOrder = FixDateTime(orderLinesOfOrder);
+                    orderLinesOfOrder = CommonBehaviour.FixDateTime(orderLinesOfOrder);
                     return orderLinesOfOrder;
                 }
                 else
@@ -85,7 +85,7 @@ namespace BCMY.WebAPI.Controllers
 
                 // convert the result orderlines (by order ID)
                 IList<OrderLineViewModel> orderLinesOfOrder = result.ToList<OrderLineViewModel>();
-                orderLinesOfOrder = FixDateTime(orderLinesOfOrder);
+                orderLinesOfOrder = CommonBehaviour.FixDateTime(orderLinesOfOrder);
                 return orderLinesOfOrder;
             }
             catch (Exception ex)
@@ -142,18 +142,7 @@ namespace BCMY.WebAPI.Controllers
             }
         }
 
-        /// <summary>
-        /// Fixes date and time null issue
-        /// </summary>
-        private IList<OrderLineViewModel> FixDateTime(IList<OrderLineViewModel> orderLinesOfOrder)
-        {
-            foreach (OrderLineViewModel ol in orderLinesOfOrder)
-            {
-                ol.Date = ol.orderlineDateTime.Date.ToShortDateString();
-                ol.Time = ol.orderlineDateTime.ToString("hh:mm tt");
-            }
-            return orderLinesOfOrder;
-        }
+        
 
     }
 }
