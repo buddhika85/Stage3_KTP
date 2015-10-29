@@ -93,13 +93,15 @@
         };
 
         vm.saveStockAmendment = function () {
+            vm.blockUI.start();
             if (vm.stockCount != null && vm.stockCount.trim() != '') {
                 saveStockAmendment(vm);
             }
             else {
                 ApplyErrorBorder($('#stockCount'));
                 DisplayErrorMessage('Error : You should provide a stock count', $('#lblErrorMessagePopup')); 
-            }            
+            }
+            vm.blockUI.stop();
         }
     }
 

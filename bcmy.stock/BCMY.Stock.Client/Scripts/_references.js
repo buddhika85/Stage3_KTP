@@ -41,3 +41,4 @@
 /// <reference path="../app/order/pastData/pastExchangeRates/addPastExchangeRates.js" />
 /// <reference path="../app/order/pastData/pastSalesOrder/addPastSalesOrders.js" />
 /// <reference path="../app/product/amendStockCtrl.js" />
+/// <reference path="../app/order/pastData/pastSalesOrder/editPastSalesOrder.js" />

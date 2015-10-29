@@ -253,7 +253,7 @@ namespace BCMY.WebAPI.Controllers
                 var result = productStockRepository.SQLQuery<ProductInfoViewModel>("SP_GetProductsWithStockInfo");
 
                 // convert the result to a view model object
-                IEnumerable<ProductInfoViewModel> productInfoVms = result;
+                IEnumerable<ProductInfoViewModel> productInfoVms = result.ToList<ProductInfoViewModel>();
                 return productInfoVms;
             }
             catch (Exception)

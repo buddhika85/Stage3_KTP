@@ -19,6 +19,7 @@ namespace DataAccess_EF.ViewModels
         public string vat { get; set; }
         public int currencyId { get; set; }
         public string currency { get; set; }
+        public string pastOrder { get; set; }   // yes or no /null
 
         // view model - extra attributes
         public int? companyId { get; set; }                 // customerSupplier

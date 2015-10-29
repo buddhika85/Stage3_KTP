@@ -59,11 +59,17 @@
                             templateUrl: "app/order/pastData/pastExchangeRates/AddPastExchangeRates.html",
                             controller: "AddPastExchangeRatesCtrl as vm"
                         })
-                        // Past data - sales orders
+                        // Past data - add sales orders
                         .state("addPastSalesOrders", {
                             url: "/order/pastData/pastSalesOrder/addPastSalesOrders",
                             templateUrl: "app/order/pastData/pastSalesOrder/AddPastSalesOrders.html",
                             controller: "AddPastSalesOrdersCtrl as vm"
+                        })
+                        // Past data - edit sales orders
+                        .state("editPastSalesOrder", {
+                            url: "/order/pastData/pastSalesOrder/editPastSalesOrder",
+                            templateUrl: "app/order/pastData/pastSalesOrder/EditPastSalesOrder.html",
+                            controller: "EditPastSalesOrderCtrl as vm"
                         })
 
                         // Amend stock quantities

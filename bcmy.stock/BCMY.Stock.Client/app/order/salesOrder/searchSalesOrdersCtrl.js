@@ -133,8 +133,19 @@
 
                         { "mData": "company", "sTitle": "Customer/Supplier" },
                         { "mData": "contactFulName", "sTitle": "Contact" },
-                        { "mData": "orderCreationDate", "sTitle": "Date" },
+                        { "mData": "orderCreationDate", "sTitle": "Date"},
                         { "mData": "orderCreationTime", "sTitle": "Time" },
+                        {
+                            "mData": "pastOrder", "sTitle": "Past order", "mRender": function (data, type, row) {
+                                if (data != null && data == 'yes') {
+                                    return 'yes';
+                                }
+                                else {
+                                    return 'no';
+                                }
+                            },
+                            "aTargets": [0]
+                        },
 
                         { "sTitle": "Edit Order", "defaultContent": "<button class='orderSearchEdit'>Edit</button>" },
                 ],
@@ -159,11 +170,23 @@
     function onOrderEditBtnClick(dataRow, $http, $location, $rootScope)
     {
         var orderId = dataRow.id;
-        //debugger
-        if (orderId != null) {
+
+        debugger
+        var pastDate = dataRow.orderCreationDate;
+        pastDate = pastDate.split("/");
+        pastDate = (pastDate[2] + '-' + pastDate[1] + '-' + pastDate[0]); //new Date(pastDate[2], pastDate[1] - 1, pastDate[0]);
+               
+        if (orderId != null && (dataRow.pastOrder == null || dataRow.pastOrder == 'no')) {
             $rootScope.$apply(function () {
                 // pass order Id to edit order page
                 $location.path("/order/salesOrder/editSalesOrder").search({ orderId: orderId });
+            });
+        }
+        else if (orderId != null && (dataRow.pastOrder != null || dataRow.pastOrder == 'yes')) {
+            //alert(" a past order ");
+            $rootScope.$apply(function () {
+                // pass order Id to edit order page
+                $location.path("/order/pastData/pastSalesOrder/editPastSalesOrder").search({ orderId: orderId, pastDate: pastDate });
             });
         }
         else {
