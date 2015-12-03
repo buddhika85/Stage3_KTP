@@ -34,7 +34,7 @@ namespace BCMY.WebAPI.Models
         public string ProductCatergoryName { get; set; }
         public Nullable<int> productcondition { get; set; }
         public string conditionName { get; set; }
-        public int? stockCount { get; set; }                                 // actual stock count
+        public int stockCount { get; set; }                                 // actual stock count
         public string stockAmended { get; set; }                            // if stock amended to show the actual stock count of the warehouse --> yes 
     }
 }
