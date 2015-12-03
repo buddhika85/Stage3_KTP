@@ -12,6 +12,7 @@ namespace UnitTesting.RepositoryCRUDTesting
     [TestClass]
     public class BusinessRepoTesting
     {
+        
         [TestMethod]
         public void TestInsert()
         {       
