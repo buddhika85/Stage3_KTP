@@ -93,8 +93,8 @@
         };
 
         vm.saveStockAmendment = function () {
-            vm.blockUI.start();
-            if (vm.stockCount != null && vm.stockCount.trim() != '') {
+            vm.blockUI.start();            
+            if (vm.stockCount != null && $.trim(vm.stockCount) != '') {
                 saveStockAmendment(vm);
             }
             else {
@@ -107,7 +107,7 @@
 
     // used to save stock amendments
     function saveStockAmendment(vm)
-    {
+    {        
         //alert('save amended stock : ' + vm.productListId + ' ' + vm.stockCount);
         var serverUrl = 'http://localhost:61945/api/ProductInfo?productId=' + vm.productListId + '&quantity=' + vm.stockCount;
         vm.httpService({
@@ -144,6 +144,8 @@
                     //alert("update " + vm.productListId + " to " + vm.stockCount);
                     vm.tableRecords[i].stockCount = vm.stockCount;
                     vm.tableRecords[i].stockAmended = 'yes';
+                    //debugger;
+                    vm.tableRecords[i].lastAmendedTimeValue = new Date().toLocaleString();
                     break;
                 }
             }           
@@ -276,6 +278,10 @@
                     { "mData": "model", "sTitle": "Model" },
                     { "mData": "marketvalueGBP", "sTitle": "Market value &#163", "bVisible": false },
                     { "mData": "stockCount", "sTitle": "Stock count" },
+                    //{ "mData": "lastAmendedDateValue", "sTitle": "Last amended date" },
+                    { "mData": "lastAmendedTimeValue", "sTitle": "Last amended time" },
+                    //{ "mData": "lastIncrementDateValue", "sTitle": "Last increment date" },
+                    { "mData": "lastIncrementTimeValue", "sTitle": "Last increment time" },
                     {
                         "mData": "stockAmended", "sTitle": "Counted?", "sClass": "right", "mRender": function (data, type, row) {
                             if (data == null || data == 'no') {
