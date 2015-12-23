@@ -52,6 +52,28 @@ namespace BCMY.WebAPI.Controllers
                 return "Error - Could not access the DB Server - Please contact IT Support";
             }
         }
+                
+        /// <summary>
+        /// Used to change the status of the order to - confirm 
+        /// Returns a string message explaining the result
+        /// http://localhost:61945/api/Order?orderId=25
+        /// </summary>
+        [HttpGet, ActionName("DeleteOrder")]
+        public string DeleteOrder(int deleteOrderId)
+        {
+            try
+            {
+                // call stored procedure via repository
+                var result = orderRepository.SQLQuery<string>("SP_DeleteOrder @orderId",
+                    new SqlParameter("orderId", SqlDbType.Int) { Value = deleteOrderId });
+
+                return result.FirstOrDefault<string>();
+            }
+            catch (Exception ex)
+            {
+                return "Error - Could not access the DB Server - Please contact IT Support";
+            }
+        }
 
         /// <summary>
         /// Used to search order records

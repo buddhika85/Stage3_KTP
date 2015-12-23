@@ -148,6 +148,7 @@
                         },
 
                         { "sTitle": "Edit Order", "defaultContent": "<button class='orderSearchEdit'>Edit</button>" },
+                        { "sTitle": "Delete Order", "defaultContent": "<button class='orderSearchDelete'>Delete</button>" },
                 ],
                 "bDestroy": true,
                 "aLengthMenu": [[10, 25, 100, -1], [10, 25, 100, "All"]],
@@ -157,13 +158,38 @@
             // data table
             var table = $('#ordersGrid').DataTable();
 
-            // on info button clicks
+            // on edit button clicks
             $('#ordersGrid tbody').on('click', 'button.orderSearchEdit', function () {
                 var dataRow = table.row($(this).parents('tr')).data();
                 //alert("View Info : " + data.productlistId + " - " + data.model);
                 onOrderEditBtnClick(dataRow, $http, $location, $rootScope);
             });
+            // on delete button clicks
+            $('#ordersGrid tbody').on('click', 'button.orderSearchDelete', function () {
+                var dataRow = table.row($(this).parents('tr')).data();
+                //alert("View Info : " + data.productlistId + " - " + data.model);
+                onOrderDeleteBtnClick(dataRow, $http);
+            });
         }
+    }
+
+    // on delete button click
+    function onOrderDeleteBtnClick(dataRow, $http) {
+        debugger;
+        var orderId = dataRow.id;
+        $http({
+            method: "get",
+            headers: { 'Content-Type': 'application/json' },
+            url: ('http://localhost:61945/api/Order?deleteOrderId=' + orderId),
+        }).success(function (data) {
+            alert(data);
+
+            // TO DO : refresh grid if the deletion success
+        }
+        ).error(function (data) {
+            // display error message
+            alert('error - web service access')
+        });        
     }
 
     // on edit button click
