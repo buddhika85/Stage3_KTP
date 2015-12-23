@@ -781,6 +781,8 @@
         var marketValueSpecificCurr = '';
         var stockCount = '';
         var selectedCurrency = $('#selectCurrency option:selected').text().toUpperCase();
+        var stockAmended = '';
+        var lastAmendedDateValue = '';
 
         // get market value and stock count     
         $http({
@@ -792,8 +794,11 @@
                 marketValueGBP = data.marketvalueGBP;
                 marketValueSpecificCurr = GetMarketValueFromSpecificCurrency(selectedCurrency, data);
                 stockCount = data.stockCount;
+                stockAmended = data.stockAmended;
+                lastAmendedDateValue = data.lastAmendedDateValue;
 
-                DisplayNegotiationPopup($http, productListId, category, condition, brand, model, marketValueGBP, marketValueSpecificCurr, stockCount, selectedCurrency);
+                DisplayNegotiationPopup($http, productListId, category, condition, brand, model, marketValueGBP, marketValueSpecificCurr, stockCount, selectedCurrency, 
+                    stockAmended, lastAmendedDateValue);
             }
             else {
                 alert('error - web service access - cound not find a product with Id - ' + productListId + ' - please contact IT helpdesk');
@@ -831,7 +836,7 @@
     }
 
     // used to display the product negotiation popup
-    function DisplayNegotiationPopup($http, productListId, category, condition, brand, model, marketValueGBP, marketValueSpecificCurr, stockCount, selectedCurrency)
+    function DisplayNegotiationPopup($http, productListId, category, condition, brand, model, marketValueGBP, marketValueSpecificCurr, stockCount, selectedCurrency, stockAmended, lastAmendedDateValue)
     {        
         // populate the popup
         $('#productListId').val(productListId);
@@ -851,6 +856,9 @@
         $('#priceInput').val('');
         $('#statusSelect').val(-1);
         $('#totalIncome').text(0.0);
+
+        $('#lblStockCounted').text(stockAmended);
+        $('#lblStockCountedDate').text(lastAmendedDateValue);
 
         DisplayErrorMessage('', $('#lblErrorManageNegotiation'));
         
@@ -894,7 +902,7 @@
     }
 
     // Used to edit an existing orderline
-    function DisplayEditOrderLinePopup($http, productListId, category, condition, brand, model, marketValueGBP, stockCount, quantityAsked, negotiatedPricePerItem, totalAsked, status, selectedCurrency, marketValueSpecificCurr)
+    function DisplayEditOrderLinePopup($http, productListId, category, condition, brand, model, marketValueGBP, stockCount, quantityAsked, negotiatedPricePerItem, totalAsked, status, selectedCurrency, marketValueSpecificCurr, stockAmended, lastAmendedDateValue)
     {
         // get status numeric value for selection 
         FindStatus($http, status);
@@ -917,6 +925,9 @@
         $('#priceInput').val(RoundUpTo(negotiatedPricePerItem, 2));
         //$('#statusSelect').val(status);
         $('#totalIncome').text(RoundUpTo(totalAsked, 2));
+
+        $('#lblStockCounted').text(stockAmended);
+        $('#lblStockCountedDate').text(lastAmendedDateValue);
 
         DisplayErrorMessage('', $('#lblErrorManageNegotiation'));
 
@@ -1251,7 +1262,8 @@
             url: serverUrl
         }).success(function (data) {            
             DisplayEditOrderLinePopup($http, data.productId, data.category, data.condition, data.brand, data.model, data.marketvalueGBP, data.stockCount,
-                            dataRow.quantity, dataRow.negotiatedPricePerItem, dataRow.totalAmount, data.status, selectedCurrency, data.marketValueSpecificCurr);
+                            dataRow.quantity, dataRow.negotiatedPricePerItem, dataRow.totalAmount, data.status, selectedCurrency, data.marketValueSpecificCurr,
+                            data.stockAmended, data.lastAmendedDateValue);
         }
         ).error(function (data) {
             // display error message

@@ -49,5 +49,8 @@ namespace DataAccess_EF.ViewModels
         public Decimal? marketvalueGBP { get; set; }
         public Decimal? marketValueSpecificCurr { get; set; }
         public int? stockCount { get; set; }
+
+        public string stockAmended { get; set; }
+        public string lastAmendedDateValue { get; set; }
     }
 }
