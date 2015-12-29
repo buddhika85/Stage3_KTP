@@ -42,3 +42,6 @@
 /// <reference path="../app/order/pastData/pastSalesOrder/addPastSalesOrders.js" />
 /// <reference path="../app/product/amendStockCtrl.js" />
 /// <reference path="../app/order/pastData/pastSalesOrder/editPastSalesOrder.js" />
+/// <reference path="bootbox.min.js" />
+/// <reference path="toaster.min.js" />
+/// <reference path="toastr.js" />

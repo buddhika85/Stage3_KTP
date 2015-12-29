@@ -147,8 +147,8 @@
                             "aTargets": [0]
                         },
 
-                        { "sTitle": "Edit Order", "defaultContent": "<button class='orderSearchEdit'>Edit</button>" },
-                        { "sTitle": "Delete Order", "defaultContent": "<button class='orderSearchDelete'>Delete</button>" },
+                        { "sTitle": "Edit Order", "defaultContent": "<button class='orderSearchEdit'><span class='glyphicon glyphicon-edit'/></button>" },
+                        { "sTitle": "Delete Order", "defaultContent": "<button class='orderSearchDelete'><span class='glyphicon glyphicon-remove'/></button>" },
                 ],
                 "bDestroy": true,
                 "aLengthMenu": [[10, 25, 100, -1], [10, 25, 100, "All"]],
@@ -166,30 +166,55 @@
             });
             // on delete button clicks
             $('#ordersGrid tbody').on('click', 'button.orderSearchDelete', function () {
+                var row = $(this).parents('tr');
                 var dataRow = table.row($(this).parents('tr')).data();
                 //alert("View Info : " + data.productlistId + " - " + data.model);
-                onOrderDeleteBtnClick(dataRow, $http);
+                onOrderDeleteBtnClick(dataRow, $http, row);
             });
         }
     }
 
     // on delete button click
-    function onOrderDeleteBtnClick(dataRow, $http) {
-        debugger;
-        var orderId = dataRow.id;
-        $http({
-            method: "get",
-            headers: { 'Content-Type': 'application/json' },
-            url: ('http://localhost:61945/api/Order?deleteOrderId=' + orderId),
-        }).success(function (data) {
-            alert(data);
+    function onOrderDeleteBtnClick(dataRow, $http, row) {
+        
+        bootbox.dialog({
+            message: "Are you sure that you want to delete order " + dataRow.id + " by " + dataRow.contactFulName + " of " + dataRow.company + " ?",
+            title: "Confirm Order Deletion",
+            buttons: {
+                danger: {
+                    label: "No",
+                    className: "btn-danger",
+                    callback: function () {
+                        toastr.warning("Order not deleted");
+                    }
+                },
+                main: {
+                    label: "Yes",
+                    className: "btn-primary",
+                    callback: function () {                        
+                        var orderId = dataRow.id;
+                        $http({
+                            method: "get",
+                            headers: { 'Content-Type': 'application/json' },
+                            url: ('http://localhost:61945/api/Order?deleteOrderId=' + orderId),
+                        }).success(function (data) {                           
+                            refreshGridAfterDelete(row); // refresh grid if the deletion success                            
+                            toastr.success(data);
+                        }
+                        ).error(function (data) {
+                            // display error message
+                            alert('error - web service access - contact IT support')
+                        });
+                    }
+                }
+            }
+        });           
+    }
 
-            // TO DO : refresh grid if the deletion success
-        }
-        ).error(function (data) {
-            // display error message
-            alert('error - web service access')
-        });        
+    // used to remove the deleted order row from the grid
+    function refreshGridAfterDelete(row)
+    {       
+        row.remove();
     }
 
     // on edit button click
