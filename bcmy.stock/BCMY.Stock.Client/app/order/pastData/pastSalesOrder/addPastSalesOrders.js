@@ -1163,7 +1163,9 @@
                         { "mData": "time", "sTitle": "Time", "bVisible": false },
                         { "mData": "orderId", "sTitle": "Order Id", "bVisible": false },
 
-                        { "sTitle": "Edit Info", "defaultContent": "<button class='businessEdit'>Edit</button>" },
+                        { "sTitle": "Edit Info", "defaultContent": "<button class='businessEdit'><span class='glyphicon glyphicon-edit'/></button>" },
+                        { "sTitle": "Reject", "defaultContent": "<button class='businessReject'><span class='glyphicon glyphicon-ban-circle'/></button>" },
+                        { "sTitle": "Delete", "defaultContent": "<button class='businessDelete'><span class='glyphicon glyphicon-remove'/></button>" },
                 ],
                 "bDestroy": true,
                 "aLengthMenu": [[25, 50, 100, 200, -1], [25, 50, 100, 200, "All"]],
@@ -1179,11 +1181,35 @@
                 //alert("View Info : " + data.productlistId + " - " + data.model);
                 OnOrderLineEditBtnClick(dataRow, $http);
             });
+            // on reject button clicks
+            $('#orderGrid tbody').on('click', 'button.businessReject', function () {
+                var dataRow = table.row($(this).parents('tr')).data();
+                //alert("View Info : " + data.productlistId + " - " + data.model);
+                OnOrderLineRejectBtnClick(dataRow, $http);
+            });
+            // on delete button clicks
+            $('#orderGrid tbody').on('click', 'button.businessDelete', function () {
+                var dataRow = table.row($(this).parents('tr')).data();
+                //alert("View Info : " + data.productlistId + " - " + data.model);
+                OnOrderLineDeleteBtnClick(dataRow, $http);
+            });
         }
         //else {
         //    DisplayErrorMessage('Error : No products in the specified search criteria', $('#lblErrorOrderLineMessage'));
         //    alert('Error : No products in the specified search criteria');
         //}
+    }
+
+    // reject orderline
+    function OnOrderLineRejectBtnClick(dataRow, $http) {
+        debugger;
+        alert("Reject orderline : " + dataRow.id);
+    }
+
+    // delete orderline
+    function OnOrderLineDeleteBtnClick(dataRow, $http) {
+        debugger;
+        alert("Delete orderline : " + dataRow.id);
     }
 
     // edit orderline
