@@ -149,7 +149,7 @@ namespace BCMY.WebAPI.Controllers
         /// http://localhost:61945/api/orderline?orderId=25&orderlineId=125&deleteOrReject=rej
         /// </summary>
         [HttpGet, ActionName("DeleteRejectOrderline")]
-        public string DeleteOrder(string deleteOrReject, int orderlineId, int orderId)
+        public string DeleteOrderline(string deleteOrReject, int orderlineId, int orderId)
         {
             try
             {

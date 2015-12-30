@@ -1202,15 +1202,17 @@
             });
             // on reject button clicks
             $('#orderGrid tbody').on('click', 'button.businessReject', function () {
+                var row = $(this).parents('tr');
                 var dataRow = table.row($(this).parents('tr')).data();
                 //alert("View Info : " + data.productlistId + " - " + data.model);
-                OnOrderLineRejectBtnClick(dataRow, $http);
+                OnOrderLineRejectBtnClick(row, dataRow, $http);
             });
             // on delete button clicks
             $('#orderGrid tbody').on('click', 'button.businessDelete', function () {
+                var row = $(this).parents('tr');
                 var dataRow = table.row($(this).parents('tr')).data();
                 //alert("View Info : " + data.productlistId + " - " + data.model);
-                OnOrderLineDeleteBtnClick(dataRow, $http);
+                OnOrderLineDeleteBtnClick(row, dataRow, $http);
             });
         }
         //else {
@@ -1221,15 +1223,104 @@
     }
 
     // reject orderline
-    function OnOrderLineRejectBtnClick(dataRow, $http) {
-        debugger;
-        alert("Reject orderline : " + dataRow.id);
+    function OnOrderLineRejectBtnClick(row, dataRow, $http) {
+        bootbox.dialog({
+            message: "Are you sure that you want to reject orderline " + dataRow.id + " of " + dataRow.orderId + " ?",
+            title: "Confirm Order Deletion",
+            buttons: {
+                danger: {
+                    label: "No",
+                    className: "btn-danger",
+                    callback: function () {
+                        toastr.warning("Orderline not rejected");
+                    }
+                },
+                main: {
+                    label: "Yes",
+                    className: "btn-primary",
+                    callback: function () {
+                        DeleteRejectOrderline($http, 'rej', dataRow.id, dataRow.orderId, row);
+                    }
+                }
+            }
+        });
     }
 
     // delete orderline
-    function OnOrderLineDeleteBtnClick(dataRow, $http) {
-        debugger;
-        alert("Delete orderline : " + dataRow.id);
+    function OnOrderLineDeleteBtnClick(row, dataRow, $http) {
+        bootbox.dialog({
+            message: "Are you sure that you want to delete orderline " + dataRow.id + " of " + dataRow.orderId + " ?",
+            title: "Confirm Order Deletion",
+            buttons: {
+                danger: {
+                    label: "No",
+                    className: "btn-danger",
+                    callback: function () {
+                        toastr.warning("Orderline not deleted");
+                    }
+                },
+                main: {
+                    label: "Yes",
+                    className: "btn-primary",
+                    callback: function () {
+                        DeleteRejectOrderline($http, 'del', dataRow.id, dataRow.orderId, row);
+                    }
+                }
+            }
+        });
+    }
+
+    // used to make server call to delete or reject an orderline
+    function DeleteRejectOrderline($http, deleteOrReject, orderlineId, orderId, row) {
+        var serverUrl = 'http://localhost:61945/api/pastsalesorder?orderId=' + orderId + '&orderlineId=' + orderlineId + '&deleteOrReject=' + deleteOrReject;
+        $http({
+            method: "get",
+            headers: { 'Content-Type': 'application/json' },
+            url: serverUrl
+        }).success(function (data) {
+            debugger;
+            if (data.indexOf('success') > -1) {
+                // remove orderline from the grid
+                RemoveOrderlineFromGrid(row);
+                bootbox.dialog({
+                    title: "Success",
+                    message: 'Orderline ' + orderlineId + ' of order ' + orderId + (deleteOrReject == 'del' ? ' deleted' : ' rejected') + ' successfuly',
+                    buttons: {
+                        main: {
+                            label: "Ok",
+                            className: "btn-primary",
+                            callback: function () {
+                                toastr.success('orderline ' + orderlineId + (deleteOrReject == 'del' ? ' deleted' : ' rejected'));
+                            }
+                        }
+                    }
+                });
+            }
+            else {
+                bootbox.dialog({
+                    title: "Error",
+                    message: 'Orderline ' + orderlineId + ' of order ' + orderId + (deleteOrReject == 'del' ? ' deletion' : ' rejection') + ' unsuccessful',
+                    buttons: {
+                        main: {
+                            label: "Ok",
+                            className: "btn-primary",
+                            callback: function () {
+                                toastr.error('orderline ' + orderlineId + ' not ' + (deleteOrReject == 'del' ? ' deleted' : ' rejected'));
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        ).error(function (data) {
+            // display error message
+            alert('error - web service access - please contact IT helpdesk');
+        });
+    }
+
+    // remove orderline from the grid
+    function RemoveOrderlineFromGrid(row) {
+        row.remove();
     }
 
     // edit orderline

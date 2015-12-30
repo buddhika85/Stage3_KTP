@@ -107,5 +107,30 @@ namespace BCMY.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Used to change the status of the order to - confirm 
+        /// Returns a string message explaining the result
+        /// http://localhost:61945/api/orderline?orderId=25&orderlineId=125&deleteOrReject=del or
+        /// http://localhost:61945/api/orderline?orderId=25&orderlineId=125&deleteOrReject=rej
+        /// </summary>
+        [HttpGet, ActionName("DeleteRejectOrderline")]
+        public string DeletePastOrderline(string deleteOrReject, int orderlineId, int orderId)
+        {
+            try
+            {
+                // call stored procedure via repository
+                var result = orderLineRepository.SQLQuery<string>("SP_DeleteOrRejectPastOrderline @deleteOrReject, @orderlineId, @orderId",
+                            new SqlParameter("deleteOrReject", SqlDbType.VarChar) { Value = deleteOrReject },
+                            new SqlParameter("orderlineId", SqlDbType.Int) { Value = orderlineId },
+                            new SqlParameter("orderId", SqlDbType.Int) { Value = orderId });
+
+                return result.FirstOrDefault<string>();
+            }
+            catch (Exception ex)
+            {
+                return "Error - Could not access the DB Server - Please contact IT Support";
+            }
+        }
+
     }
 }

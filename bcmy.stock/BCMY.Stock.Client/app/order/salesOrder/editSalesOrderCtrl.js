@@ -1266,16 +1266,50 @@
 
     // reject orderline
     function OnOrderLineRejectBtnClick(row, dataRow, $http) {
-        debugger;
-        alert("Reject orderline : " + dataRow.id + " order Id : " + dataRow.orderId);
-        DeleteRejectOrderline($http, 'rej', dataRow.id, dataRow.orderId, row);        
+        bootbox.dialog({
+            message: "Are you sure that you want to reject orderline " + dataRow.id + " of " + dataRow.orderId + " ?",
+            title: "Confirm Order Deletion",
+            buttons: {
+                danger: {
+                    label: "No",
+                    className: "btn-danger",
+                    callback: function () {
+                        toastr.warning("Orderline not rejected");
+                    }
+                },
+                main: {
+                    label: "Yes",
+                    className: "btn-primary",
+                    callback: function () {
+                        DeleteRejectOrderline($http, 'rej', dataRow.id, dataRow.orderId, row);
+                    }
+                }
+            }
+        });
     }
 
     // delete orderline
     function OnOrderLineDeleteBtnClick(row, dataRow, $http) {
-        debugger;
-        alert("Delete orderline : " + dataRow.id + " order Id : " + dataRow.orderId);
-        DeleteRejectOrderline($http, 'del', dataRow.id, dataRow.orderId, row);
+        bootbox.dialog({
+            message: "Are you sure that you want to delete orderline " + dataRow.id + " of " + dataRow.orderId + " ?",
+            title: "Confirm Order Deletion",
+            buttons: {
+                danger: {
+                    label: "No",
+                    className: "btn-danger",
+                    callback: function () {
+                        toastr.warning("Orderline not deleted");
+                    }
+                },
+                main: {
+                    label: "Yes",
+                    className: "btn-primary",
+                    callback: function () {
+                        DeleteRejectOrderline($http, 'del', dataRow.id, dataRow.orderId, row);
+                    }
+                }
+            }
+        });
     }
 
     // used to make server call to delete or reject an orderline
