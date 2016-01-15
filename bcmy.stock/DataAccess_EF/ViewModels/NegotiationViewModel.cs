@@ -28,5 +28,9 @@ namespace DataAccess_EF.ViewModels
         public int? contactId { get; set; }
         public string cusomerSupplierName { get; set; }
         public string contactName { get; set; }
+
+        // Orderline percentage with order total
+        public Nullable<decimal> orderlineTotalPercentage { get; set; }
+        public Nullable<decimal> orderTotal { get; set; }
     }
 }

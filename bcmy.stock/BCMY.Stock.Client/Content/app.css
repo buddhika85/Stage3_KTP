@@ -68,6 +68,13 @@
     padding-bottom: 2%;
 }
 
+.alignTxtRight {
+    text-align:right;
+}
+
+.thGreenBackGround {
+    background-color: #4CAF50;
+}
 
 /*.productInfo {
 }*/

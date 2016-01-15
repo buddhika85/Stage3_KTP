@@ -906,27 +906,25 @@
     }
 
     // display successful negotiations table
-    function DrawSuccessNegotiationsGrid(successNegos, compnayName)
-    {
-        //debugger;
-        var htmlTable = "<table class='table table-condensed table-striped table-bordered'><tr><th>Company</th><th>Contact</th><th>Date</th><th>Time</th><th>Qty</th><th>PPI (" +
-            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th><th>Total (" +
-            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th></tr>";
+    function DrawSuccessNegotiationsGrid(successNegos, compnayName) {
+        var htmlTable = "<div style='height:225px; overflow-y:scroll;'><table class='table table-condensed table-striped table-bordered'><tr style='background-color: #4CAF50'><th>Company</th><th>Contact</th><th>Date</th><th>Qty</th><th>PPI (" +
+            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th><th>OL Total (" +
+            getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th><th>% Ord Total</th></tr>";
         if (successNegos != null && successNegos.length > 0) {
 
+            successNegos = AppendDecimalZeros(successNegos);
             $.each(successNegos, function (index, item) {
-
                 // highlight same company success negotations 
                 if (compnayName == item.cusomerSupplierName) {
 
-                    htmlTable += "<tr style='background-color: #ffff99'>" + "<td>" + item.cusomerSupplierName + "</td>" + "<td>" + item.contactName + "</td>" + "<td>" + item.date + "</td>" + "<td>" + item.time + "</td>" +
-                    "<td>" + item.quantity + "</td>" + "<td>" + item.negotiatedPricePerItem + "</td>" +
-                    "<td>" + item.totalAmount + "</td>" + "</tr>";
+                    htmlTable += "<tr>" + "<td>" + item.cusomerSupplierName + "</td>" + "<td>" + item.contactName + "</td>" + "<td>" + item.date + "</td>" +
+                    "<td class='alignTxtRight'>" + item.quantity + "</td>" + "<td>" + item.negotiatedPricePerItem + "</td>" +
+                    "<td>" + item.totalAmount + "</td>" + "<td>" + item.orderlineTotalPercentage + " %</td>" + "</tr>";
                 }
                 else {
-                    htmlTable += "<tr>" + "<td>" + item.cusomerSupplierName + "</td>" + "<td>" + item.contactName + "</td>" + "<td>" + item.date + "</td>" + "<td>" + item.time + "</td>" +
-                    "<td>" + item.quantity + "</td>" + "<td>" + item.negotiatedPricePerItem + "</td>" +
-                    "<td>" + item.totalAmount + "</td>" + "</tr>";
+                    htmlTable += "<tr>" + "<td>" + item.cusomerSupplierName + "</td>" + "<td>" + item.contactName + "</td>" + "<td>" + item.date + "</td>" +
+                    "<td class='alignTxtRight'>" + item.quantity + "</td>" + "<td class='alignTxtRight'>" + item.negotiatedPricePerItem + "</td>" +
+                    "<td class='alignTxtRight'>" + item.totalAmount + "</td>" + "<td class='alignTxtRight'>" + item.orderlineTotalPercentage + "%</td>" + "</tr>";
                 }
             });
         }
@@ -934,10 +932,23 @@
             htmlTable += "<tr>" + "<td>" + "-" + "</td>" + "<td>" + "-" + "</td>" + "<td>" + "-" + "</td>" + "<td>" + "-" + "</td>" +
                     "<td>" + "-" + "</td>" + "<td>" + "-" + "</td>" + "<td>" + "-" + "</td>" + "</tr>";
         }
-        htmlTable += "</table>";
+        htmlTable += "</table></div>";
         $('#successNegotiationsGridDiv').empty();
         $('#successNegotiationsGridDiv').html(htmlTable);
     }
+
+    // appends decimal places - zeros if necessary
+    function AppendDecimalZeros(successNegos) {
+        $.each(successNegos, function (index, item) {
+
+            item.negotiatedPricePerItem = RoundUpTo(item.negotiatedPricePerItem, 2);
+            item.totalAmount = RoundUpTo(item.totalAmount, 2);
+            item.orderlineTotalPercentage = RoundUpTo(item.orderlineTotalPercentage, 2);
+            item.orderTotal = RoundUpTo(item.orderTotal, 2);
+        });
+        return successNegos;
+    }
+
 
     // used to record a negotation
     function RecordNegotiation($http) {
@@ -1020,25 +1031,23 @@
     }
 
     // Used to draw the negotiation grid
-    function DrawNegotiationsGrid(negotiations)
-    {
-        //debugger;
-        var htmlTable = "<table class='table table-condensed table-bordered'><tr><th>Date</th><th>Time</th><th>Qty</th><th>PPI (" +
+    function DrawNegotiationsGrid(negotiations) {
+        var htmlTable = "<div style='height:100px; overflow-y:scroll;'><table class='table table-condensed table-bordered'><tr style='background-color: #4CAF50'><th>Date</th><th>Time</th><th>Qty</th><th>PPI (" +
             getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th><th>Total (" +
             getCurrencyHtmlEntityValue($('#selectCurrency option:selected').text().toUpperCase()) + ")</th><th>Status</th></tr>";
         if (negotiations != null && negotiations.length > 0) {
-            
+
             $.each(negotiations, function (index, item) {
                 htmlTable += "<tr>" + "<td>" + item.date + "</td>" + "<td>" + item.time + "</td>" +
-                    "<td>" + item.quantity + "</td>" + "<td>" + item.negotiatedPricePerItem + "</td>" +
-                    "<td>" + item.totalAmount + "</td>" + "<td>" + item.status + "</td>" + "</tr>";
+                    "<td class='alignTxtRight'>" + item.quantity + "</td>" + "<td class='alignTxtRight'>" + item.negotiatedPricePerItem + "</td>" +
+                    "<td class='alignTxtRight'>" + item.totalAmount + "</td>" + "<td>" + item.status + "</td>" + "</tr>";
             });
         }
         else if (negotiations == null || negotiations.length == 0) {
             htmlTable += "<tr>" + "<td>" + "-" + "</td>" + "<td>" + "-" + "</td>" + "<td>" + "-" + "</td>" + "<td>" + "-" + "</td>" +
                     "<td>" + "-" + "</td>" + "<td>" + "-" + "</td>" + "</tr>";
         }
-        htmlTable += "</table>";
+        htmlTable += "</table></div>";
         $('#orderNegotiationsGridDiv').empty();
         $('#orderNegotiationsGridDiv').html(htmlTable);
     }

@@ -147,8 +147,8 @@
                             "aTargets": [0]
                         },
 
-                        { "sTitle": "Edit Order", "defaultContent": "<button class='orderSearchEdit'><span class='glyphicon glyphicon-edit'>  Info!</span></button>" },
-                        { "sTitle": "Delete Order", "defaultContent": "<button class='orderSearchDelete'><span class='glyphicon glyphicon-remove'>  Edit</span></button>" },
+                        { "sTitle": "Edit Order", "defaultContent": "<button class='orderSearchEdit'><span class='glyphicon glyphicon-edit'></span></button>" },
+                        { "sTitle": "Delete Order", "defaultContent": "<button class='orderSearchDelete'><span class='glyphicon glyphicon-remove'></span></button>" },
                 ],
                 "bDestroy": true,
                 "aLengthMenu": [[10, 25, 100, -1], [10, 25, 100, "All"]],
