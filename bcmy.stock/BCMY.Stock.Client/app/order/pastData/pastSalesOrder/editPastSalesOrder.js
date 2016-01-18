@@ -941,8 +941,8 @@
                 if (compnayName == item.cusomerSupplierName) {
 
                     htmlTable += "<tr>" + "<td>" + item.cusomerSupplierName + "</td>" + "<td>" + item.contactName + "</td>" + "<td>" + item.date + "</td>" +
-                    "<td class='alignTxtRight'>" + item.quantity + "</td>" + "<td>" + item.negotiatedPricePerItem + "</td>" +
-                    "<td>" + item.totalAmount + "</td>" + "<td>" + item.orderlineTotalPercentage + " %</td>" + "</tr>";
+                    "<td class='alignTxtRight'>" + item.quantity + "</td>" + "<td class='alignTxtRight'>" + item.negotiatedPricePerItem + "</td>" +
+                    "<td class='alignTxtRight'>" + item.totalAmount + "</td>" + "<td class='alignTxtRight'>" + item.orderlineTotalPercentage + " %</td>" + "</tr>";
                 }
                 else {
                     htmlTable += "<tr>" + "<td>" + item.cusomerSupplierName + "</td>" + "<td>" + item.contactName + "</td>" + "<td>" + item.date + "</td>" +
