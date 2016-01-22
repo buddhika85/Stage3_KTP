@@ -78,6 +78,13 @@
                             templateUrl: "app/product/AmendStock.html",
                             controller: "AmendStockCtrl as vm"
                         })
+
+                        // Amend stock quantities
+                        .state("excelUpload", {
+                            url: "/excelUpload/excelFiles",
+                            templateUrl: "app/excelUpload/ExcelUpload.html",
+                            controller: "ExcelUploadCtrl as vm"
+                        })
                     }
                 ]
     );

@@ -45,3 +45,4 @@
 /// <reference path="bootbox.min.js" />
 /// <reference path="toaster.min.js" />
 /// <reference path="toastr.js" />
+/// <reference path="../app/excelUpload/excelUploadCtrl.js" />
